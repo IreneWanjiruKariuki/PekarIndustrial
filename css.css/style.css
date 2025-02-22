@@ -1,0 +1,57 @@
+body{
+    margin: 0;
+    background-image: img width="40%" src="img1.jpg" alt="";
+}
+*{
+    box-sizing: border-box;
+}
+nav {
+    background-color: rgba(59, 99, 172, 0.532);  /* Dark background */
+    padding: 20px 0;         /* Some padding */
+    text-align: left;      /* Center the links */
+}
+
+/* Styling the links */
+nav a {
+    color:white;           /* White text */
+    text-decoration: none;  /* Remove underline */
+    padding: 20px 26px;     /* Spacing around links */
+    font-size: 18px;        /* Text size */
+    /*font-weight: bolder;*/
+    /*font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;*/
+}
+
+/* Change link color on hover */
+nav a:hover {
+    background-color: #575757;
+    border-radius: 5px;
+}
+.content{
+    text-align: center;
+}
+.search-container {
+    display: flex;
+    float: right;
+}
+
+.search-container input {
+    padding: 8px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px 0 0 5px;
+    outline: none;
+}
+
+.search-container button {
+    padding: 8px 12px;
+    font-size: 16px;
+    border: none;
+    background-color: #a8d4f1;
+    color: white;
+    border-radius: 0 5px 5px 0;
+    cursor: pointer;
+}
+
+.search-container button:hover {
+    background-color: #777;
+}
