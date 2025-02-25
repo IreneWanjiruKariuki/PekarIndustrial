@@ -3,9 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Create job card</title>
+    <link rel="stylesheet" href="css.css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
-<body>
-    createinvoice
+<body background="images/img5.jpg">
+    <nav>
+    
+        <a href="./">HOME</a>
+        <a href="viewcard.html">JOB CARDS</a>
+        <a href="viewnote.html">DELIVERY NOTES</a>
+        <a href="viewinvoice.html">INVOICES</a>
+        <div class="search-container">
+            <input type="text" placeholder="Search..." id="search">
+            <button type="submit">🔍</button>
+        </div>
+    </nav>
+
+    <div class="cont">
+        <img src="images/image.png" width="1255" height="150" class="d-inline-block align-top" alt="Logo">
+        <h2>Plumbing works, Mechanical & Electrical plant installations, HVAC,<br> Infra-Red thermography and other maintainance solutions <br> and General Contractors</h2>
+    </div>
+
+    
+    <form id="infoForm" style="background-color: white; width: 60%;">
+        <h2>Fill out the form</h2>
+        <label for="name">Name:</label>
+        <input type="text" id="name" required><br><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" required><br><br>
+
+        <label for="phone">Phone:</label>
+        <input type="tel" id="phone" required><br><br>
+
+        <label for="message">Message:</label>
+        <textarea id="message" required></textarea><br><br>
+
+        <button type="button" onclick="generatePDF()">Download as PDF</button>
+    </form>
+
+    <script>
+        async function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Getting input values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const message = document.getElementById('message').value;
+
+            // Ensure jsPDF is properly loaded
+            if (!jsPDF) {
+                alert("jsPDF failed to load. Please check your internet connection.");
+                return;
+            }
+
+            // Adding content to PDF
+            doc.setFont("helvetica", "bold");
+            doc.text("Form Submission", 10, 10);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Name: ${name}`, 10, 20);
+            doc.text(`Email: ${email}`, 10, 30);
+            doc.text(`Phone: ${phone}`, 10, 40);
+            doc.text(`Message:`, 10, 50);
+            
+            // Handling multiline message
+            const splitMessage = doc.splitTextToSize(message, 180);
+            doc.text(splitMessage, 10, 60);
+
+            // Saving the PDF
+            doc.save("form_submission.pdf");
+        }
+    </script>
+    <footer>
+        <div class="footer-container">
+            <!-- Section 1 -->
+            <div class="footer-section">
+                <h3>Pekar industrial & construction LTD</h3>
+                <ul>
+                    <li><h4>Location: Kasarani Mwiki Road</h4></li>
+                    <li><h4>P.O Box 4384-00200 City Square Nairobi</h4></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>contact info</h3>
+                <ul>
+                    <li><h4>Email: pekar.industrial@gmail.com</h4></li>
+                    <li><h4>Cell Phone: 0721301274/0722301274</h4></li>
+                </ul>
+            </div>
+            <div class="footer-bottom">
+                © 2025 Your Company | All rights reserved.
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
