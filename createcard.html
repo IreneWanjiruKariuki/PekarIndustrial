@@ -162,39 +162,99 @@
     doc.text(`${document.getElementById('dateFinished').value}`, 152, 123);
     
     // Item Description
-    doc.rect(10, 150, 60, 15);
-    doc.text("ITEM/MACHINE SERIAL NO.", 12, 150);
+    doc.rect(20, 145, 67, 15);
+    doc.text("ITEM/MACHINE SERIAL NO:", 22, 152, { maxWidth: 70 });
+    doc.rect(20, 160, 67, 40);
     
-    doc.rect(70, 150, 130, 15);
-    doc.text("JOB DESCRIPTION/INSTRUCTION", 72, 150);
+    doc.rect(87, 145, 115, 15);
+    doc.text("JOB DESCRIPTION/INSTRUCTION:", 89, 152);
+    doc.rect(87, 160, 115, 40);
     
     // Job Description Content
-    doc.text(`${document.getElementById('machineSerialNumber').value}`, 12, 132);
-    const jobDesc = doc.splitTextToSize(document.getElementById('jobDescription').value, 125);
-    doc.text(jobDesc, 72, 132);
+    doc.text(`${document.getElementById('machineSerialNumber').value}`, 22, 168);
+    doc.text(`${document.getElementById('jobDescription').value}`, 89, 168, { maxWidth: 110 });
     
     // Spare Parts Table
-    let yPos = 145;
-    doc.rect(10, yPos, 95, 10);
-    doc.text("SPARES USED", 12, yPos + 7);
-    doc.rect(105, yPos, 30, 10);
-    doc.text("QTY", 115, yPos + 7);
-    doc.rect(135, yPos, 30, 10);
-    doc.text("UNIT COST", 140, yPos + 7);
+    let yPos = 210;
+    doc.rect(20, yPos, 85, 10);
+    doc.text("SPARES USED", 22, yPos + 7);
+    doc.rect(105, yPos, 25, 10);
+    doc.text("QTY", 113, yPos + 7);
+    doc.rect(130, yPos, 35, 10);
+    doc.text("UNIT COST", 133, yPos + 7);
     doc.rect(165, yPos, 35, 10);
     doc.text("TOTAL", 175, yPos + 7);
     
     yPos += 10;
-    for (let i = 1; i <= 4; i++) {
-        doc.rect(10, yPos, 95, 10);
-        doc.rect(105, yPos, 30, 10);
-        doc.rect(135, yPos, 30, 10);
+    const spareParts = document.querySelectorAll('.spare-part');
+    spareParts.forEach((part, index) => {
+        if (index > 0 && index % 1 === 0) {
+            doc.addPage();
+            yPos = 20;
+            doc.setFont("helvetica", "bold");
+            doc.text("JOB CARD/EQUIPMENT HANDOVER", 60, 70);
+            doc.setFont("helvetica", "normal");
+        }
+
+        const sparePartName = part.querySelector('.spare-part-name').value;
+        const quantity = part.querySelector('.spare-part-quantity').value;
+        const unitCost = part.querySelector('.spare-part-unit-cost').value;
+        const totalCost = part.querySelector('.spare-part-total-cost').value;
+
+        doc.rect(20, yPos, 85, 10);
+        doc.text(sparePartName, 22, yPos + 7);
+        doc.rect(105, yPos, 25, 10);
+        doc.text(quantity, 113, yPos + 7);
+        doc.rect(130, yPos, 35, 10);
+        doc.text(unitCost, 133, yPos + 7);
         doc.rect(165, yPos, 35, 10);
+        doc.text(totalCost, 175, yPos + 7);
+
         yPos += 10;
+    });
+
+    // Add a new page for completion note if needed
+    if (spareParts.length > 1) {
+        doc.addPage();
+        const img = new Image();
+    img.src = 'images/image.png'; // Replace with your image path
+    doc.addImage(img, 'PNG', 10, 10, 50, 50);
+    
+    // Add two small paragraphs on the top right corner
+    doc.setFont("helvetica", "normal");
+    doc.text("Plumbing works, Mechanical & Electrical plant installations HVAC, Infra-Red thermography and other maintenance solutions and General Contractors", 70, 15, { maxWidth: 140 });
+    doc.text("Location: Kasarani Mwiki Road", 70, 40);
+    doc.text("P.O BOX 4384-00200 City Square Nairobi", 70, 46);
+    doc.text("Email: pekar.industrial@gmail.com", 70, 52);
+    doc.text("Cell Phone: 0722301274/0721301274", 70, 58);
+        doc.setFont("helvetica", "bold");
+        doc.text("JOB CARD/EQUIPMENT HANDOVER", 60, 70);
+        doc.setFont("helvetica", "normal");
+        yPos = 80;
+        spareParts.forEach((part, index) => {
+            if (index >= 1) {
+                const sparePartName = part.querySelector('.spare-part-name').value;
+                const quantity = part.querySelector('.spare-part-quantity').value;
+                const unitCost = part.querySelector('.spare-part-unit-cost').value;
+                const totalCost = part.querySelector('.spare-part-total-cost').value;
+
+                doc.rect(20, yPos, 85, 10);
+                doc.text(sparePartName, 22, yPos + 7);
+                doc.rect(105, yPos, 25, 10);
+                doc.text(quantity, 113, yPos + 7);
+                doc.rect(130, yPos, 35, 10);
+                doc.text(unitCost, 133, yPos + 7);
+                doc.rect(165, yPos, 35, 10);
+                doc.text(totalCost, 175, yPos + 7);
+
+                yPos += 10;
+            }
+        });
     }
+
             // Completion Note
-            doc.text("Installation, testing, and commissioning done and system left in good working condition.", 10, yPos + 10);
-            doc.text("Technician's Name and Signature: ______________________", 10, yPos + 20);
+            doc.text("Installation, testing, and commissioning done and system left in good working condition.", 20, yPos + 10, { maxWidth: 180 });
+            doc.text("Technician's Name and Signature: ______________________", 20, yPos + 30);
 
             // Saving the PDF
             doc.save("job_card.pdf");
