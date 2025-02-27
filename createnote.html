@@ -26,24 +26,63 @@
     </div>
 
     
-    <form id="infoForm" style="background-color: white; width: 60%;">
-        <h2>Fill out the form</h2>
-        <label for="name">Name:</label>
-        <input type="text" id="name" required><br><br>
+    <form id="deliveryNoteForm" style="background-color: white; width: 60%; padding: 20px;">
+        <h2>DELIVERY NOTE</h2>
+        <label for="deliverTo">DELIVER TO:</label>
+        <input type="text" id="deliverTo" required><br><br>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" required><br><br>
+        <label for="deliveryNo">DELIVERY NO:</label>
+        <input type="text" id="email" required><br><br>
 
-        <label for="phone">Phone:</label>
-        <input type="tel" id="phone" required><br><br>
+        <label for="lpo">LPO/INVOICE NO:</label>
+        <input type="text" id="phone" required><br><br>
 
-        <label for="message">Message:</label>
-        <textarea id="message" required></textarea><br><br>
+        <label for="dated">DATED:</label>
+        <input type="date" id="dated" required><br><br>
+
+        <label for="deliveryDate">DELIVERY DATE:</label>
+        <input type="date" id="deliveryDate" required><br><br>
+
+        <label for="deliveredBy">DELIVERED BY:</label>
+        <input type="text" id="deliveredBy" required><br><br>
+
+        <h3>ITEMS</h3>
+        <div id="itemsContainer">
+            <div class="item">
+                <label for="item1">ITEM:</label>
+                <input type="text" id="item1" class="item-name" required>
+                <label for="description1">DESCRIPTION:</label>
+                <textarea id="description1" class="item-description" required></textarea>
+                <label for="unit1">UNIT:</label>
+                <input type="number" id="unit1" class="item-unit" required>
+                <label for="quantity1">QTY:</label>
+                <input type="number" id="quantity1" class="item-quantity" required>
+            </div>
+        </div>
+        <button type="button" onclick="addItem()">Add Item</button><br><br>
 
         <button type="button" onclick="generatePDF()">Download as PDF</button>
     </form>
 
     <script>
+        let itemCount = 1;
+        function addItem() {
+        itemCount++;
+        const container = document.getElementById('itemsContainer');
+        const newItem = document.createElement('div');
+        newItem.classList.add('item');
+        newItem.innerHTML = `
+        <label for="item${itemCount}">ITEM:</label>
+        <input type="text" id="item${itemCount}" class="item-name" required>
+        <label for="description${itemCount}">DESCRIPTION:</label>
+        <textarea id="description${itemCount}" class="item-description" required></textarea>
+        <label for="unit${itemCount}">UNIT:</label>
+        <input type="number" id="unit${itemCount}" class="item-unit" required>
+        <label for="quantity${itemCount}">QTY:</label>
+        <input type="number" id="quantity${itemCount}" class="item-quantity" required>
+    `;
+    container.appendChild(newItem);
+}
         async function generatePDF() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
