@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Invoice</title>
+    <link rel="stylesheet" href="css.css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body background="images/img5.jpg">
+    <nav>
+        <a href="home.html">HOME</a>
+        <a href="viewcard.html">JOB CARDS</a>
+        <a href="viewnote.html">DELIVERY NOTES</a>
+        <a href="viewinvoice.html">INVOICES</a>
+        <div class="search-container">
+            <input type="text" placeholder="Search..." id="search">
+            <button type="submit">🔍</button>
+        </div>
+    </nav>
+    <div class="cont">
+        <img src="images/image.png" width="1255" height="150" class="d-inline-block align-top" alt="Logo">
+    </div>
+    <form id="invoiceForm" style="background-color: white; width: 60%; padding: 20px;">
+        <h2>INVOICE</h2>
+        <label for="name">NAME:</label>
+        <input type="text" id="name" required><br><br>
+
+        <label for="invoiceNo">INVOICE NO:</label>
+        <input type="text" id="invoiceNo" required><br><br>
+
+        <label for="address">ADDRESS:</label>
+        <input type="text" id="address" required><br><br>
+
+        <label for="lpo">LPO NO:</label>
+        <input type="text" id="lpo" required><br><br>
+
+        <label for="contact">CONTACT:</label>
+        <input type="text" id="contact" required><br><br>
+
+        <label for="deliveryNo">DELIVERY NO:</label>
+        <input type="text" id="deliveryNo" required><br><br>
+
+        <label for="tel">TEL:</label>
+        <input type="text" id="tel" required><br><br>
+
+        <label for="dated">DATE:</label>
+        <input type="date" id="dated" required><br><br>
+
+        <h3>ITEMS</h3>
+        <div id="itemsContainer">
+            <div class="ite">
+                <label for="item1">ITEM CODE:</label>
+                <input type="text" id="item1" class="item-code" required>
+                <label for="description1">DESCRIPTION:</label>
+                <textarea id="description1" class="item-description" required></textarea>
+                <label for="quantity1">QTY:</label>
+                <input type="text" id="quantity1" class="item-quantity" required>
+                <label for="unit1">UNIT PRICE:</label>
+                <input type="text" id="unit1" class="item-unit" required>
+            </div>
+        </div>
+        <button type="button" onclick="addItem()">Add Item</button><br><br>
+
+        <button type="button" onclick="generatePDF()">Download as PDF</button>
+    </form>
+    <script>
+        let itemCount = 1;
+
+        function addItem() {
+            itemCount++;
+            const container = document.getElementById('itemsContainer');
+            const newItem = document.createElement('div');
+            newItem.classList.add('ite');
+            newItem.innerHTML = `
+            <label for="item${itemCount}">ITEM CODE:</label>
+            <input type="text" id="item${itemCount}" class="item-code" required>
+            <label for="description${itemCount}">DESCRIPTION:</label>
+            <textarea id="description${itemCount}" class="item-description" required></textarea>
+            <label for="quantity${itemCount}">QTY:</label>
+            <input type="text" id="quantity${itemCount}" class="item-quantity" required>
+            <label for="unit${itemCount}">UNIT PRICE:</label>
+            <input type="text" id="unit${itemCount}" class="item-unit" required>
+            `;
+            container.appendChild(newItem);
+        }
+
+        function calculateTotals() {
+            let total = 0;
+            const items = document.querySelectorAll('.ite');
+            items.forEach((item, index) => {
+                const unitPrice = parseFloat(item.querySelector('.item-unit').value) || 0;
+                const quantity = parseFloat(item.querySelector('.item-quantity').value) || 0;
+                const totalCost = unitPrice * quantity;
+                total += totalCost;
+            });
+
+            const vat = total * 0.16;
+            const grandTotal = total + vat;
+
+            return { total, vat, grandTotal };
+        }
+
+        async function generatePDF() {
+            const { total, vat, grandTotal } = calculateTotals();
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Getting input values
+            const name = document.getElementById('name').value;
+            const invoiceNo = document.getElementById('invoiceNo').value;
+            const address = document.getElementById('address').value;
+            const lpo = document.getElementById('lpo').value;
+            const contact = document.getElementById('contact').value;
+            const deliveryNo = document.getElementById('deliveryNo').value;
+            const tel = document.getElementById('tel').value;
+            const dated = document.getElementById('dated').value;
+            
+            // Ensure jsPDF is properly loaded
+            if (!jsPDF) {
+                alert("jsPDF failed to load. Please check your internet connection.");
+                return;
+            }
+
+            const img = new Image();
+            img.src = 'images/image.png'; // Replace with your image path
+            doc.addImage(img, 'PNG', 10, 10, 50, 35);
+    
+            // Add two small paragraphs on the top right corner
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(10);
+            doc.setTextColor(128, 128, 128);
+            doc.text("Plumbing works, Mechanical & Electrical plant installations HVAC, Infra-Red thermography and other maintenance solutions and General Contractors", 70, 15, { maxWidth: 140 });
+            doc.text("Location: Kasarani Mwiki Road", 70, 25);
+            doc.text("P.O BOX 4384-00200 City Square Nairobi", 70, 31);
+            doc.text("Email: pekar.industrial@gmail.com", 70, 37);
+            doc.text("Cell Phone: 0722301274/0721301274", 70, 43);
+            // Adding content to PDF
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(18);
+            doc.setTextColor(0, 0, 0);
+            doc.setLineWidth(0.7);
+            doc.rect(15, 50, 180, 10);
+            doc.text("INVOICE", 73, 57);
+            doc.setFont("helvetica", "normal");
+
+            // Adding form details
+            doc.setFontSize(14);
+            doc.setLineWidth(0.2);
+            doc.rect(20, 63, 90, 10);
+            doc.text(`NAME: ${name}`, 22, 69);
+
+            doc.rect(115, 63, 80, 10);
+            doc.text(`INVOICE NO: ${invoiceNo}`, 117, 69);
+
+            doc.rect(20, 76, 173, 10);
+            doc.text(`ADDRESS: ${address}`, 22, 82.5);
+
+            doc.rect(20, 86, 85, 10);
+            doc.rect(65, 86, 40, 10);
+            doc.text(`LPO NO:`, 22, 92.5);
+            doc.text(`${lpo}`, 67, 92.5);
+
+            doc.rect(105, 86, 88, 10);
+            doc.rect(146, 86, 47, 10);
+            doc.text(`CONTACT:`, 107, 92.5);
+            doc.text(`${contact}`, 148, 92.5);
+
+            doc.rect(20, 96, 85, 15);
+            doc.rect(65, 96, 40, 15);
+            doc.text(`DELIVERY NO:`, 22, 104.5);
+            doc.text(`${deliveryNo}`, 67, 104.5);
+
+            doc.rect(105, 96, 88, 15);
+            doc.rect(146, 96, 47, 15);
+            doc.text(`TEL:`, 107, 104.5);
+            doc.text(`${tel}`, 148, 104.5);
+
+            doc.rect(20, 116, 85, 10);
+            doc.rect(65, 116, 40, 10);
+            doc.text(`DATE:`, 22, 122.5);
+            doc.text(`${dated}`, 67, 122.5);
+
+            doc.rect(20, 136, 20, 10);
+            doc.text(`ITEM`, 24, 142);
+
+            doc.rect(40, 136, 113, 10);
+            doc.text(`DESCRIPTION`, 43, 142);
+
+            doc.rect(153, 136, 20, 10);
+            doc.text(`QTY`, 157, 142);
+
+            doc.rect(173, 136, 20, 10);
+            doc.text(`UNIT PRICE`, 177, 142);
+
+            doc.rect(193, 136, 20, 10);
+            doc.text(`TOTAL COST`, 197, 142);
+
+            // Adding items
+            let yPos = 146;
+            const items = document.querySelectorAll('.ite');
+            items.forEach((item, index) => {
+                const itemCode = item.querySelector('.item-code').value;
+                const description = item.querySelector('.item-description').value;
+                const quantity = item.querySelector('.item-quantity').value;
+                const unitPrice = item.querySelector('.item-unit').value;
+                const totalCost = (parseFloat(unitPrice) * parseFloat(quantity)).toFixed(2);
+
+                doc.rect(20, yPos, 20, 10);
+                doc.text(`${itemCode}`, 22, yPos+6.5);
+                
+                doc.rect(40, yPos, 113, 10);
+                doc.text(` ${description}`, 42, yPos+6.5);
+                
+                doc.rect(153, yPos, 20, 10);
+                doc.text(`${quantity}`, 155, yPos+6.5);
+                
+                doc.rect(173, yPos, 20, 10);
+                doc.text(`${unitPrice}`, 175, yPos+6.5);
+
+                doc.rect(193, yPos, 20, 10);
+                doc.text(`${totalCost}`, 195, yPos+6.5);
+
+                yPos += 10; // Adding some space between items
+            });
+
+            yPos += 15;
+
+            doc.rect(20, yPos, 173, 10);
+            doc.text(`TOTAL: ${total.toFixed(2)}`, 22, yPos+6.5);
+
+            yPos += 10;
+            doc.rect(20, yPos, 173, 10);
+            doc.text(`VAT (16%): ${vat.toFixed(2)}`, 22, yPos+6.5);
+
+            yPos += 10;
+            doc.rect(20, yPos, 173, 10);
+            doc.text(`GRAND TOTAL: ${grandTotal.toFixed(2)}`, 22, yPos+6.5);
+
+            // Saving the PDF
+            doc.save("invoice.pdf");
+        }
+    </script>
+    <footer>
+        <div class="footer-container">
+            <!-- Section 1 -->
+            <div class="footer-section">
+                <h3>Pekar industrial & construction LTD</h3>
+                <ul>
+                    <li><h4>Location: Kasarani Mwiki Road</h4></li>
+                    <li><h4>P.O Box 4384-00200 City Square Nairobi</h4></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>contact info</h3>
+                <ul>
+                    <li><h4>Email: pekar.industrial@gmail.com</h4></li>
+                    <li><h4>Cell Phone: 0721301274/0722301274</h4></li>
+                </ul>
+            </div>
+            <div class="footer-bottom">
+                © 2025 Your Company | All rights reserved.
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
