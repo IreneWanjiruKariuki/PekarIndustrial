@@ -142,63 +142,64 @@
             doc.setTextColor(0, 0, 0);
             doc.setLineWidth(0.7);
             doc.rect(15, 50, 180, 10);
-            doc.text("INVOICE", 73, 57);
+            doc.text("REF: INVOICE", 81, 57);
             doc.setFont("helvetica", "normal");
 
             // Adding form details
             doc.setFontSize(14);
             doc.setLineWidth(0.2);
-            doc.rect(20, 63, 90, 10);
-            doc.text(`NAME: ${name}`, 22, 69);
+            doc.text(`Name:`, 20, 69);
+            doc.text(`${name}`, 38, 69);
+            doc.text(`_____________________`, 37, 69.5);
+        
+            doc.text(`Invoice Number:`, 103, 69);
+            doc.text(`${invoiceNo}`, 142, 69);
+            doc.text(`___________________`, 141, 69.5);
 
-            doc.rect(115, 63, 80, 10);
-            doc.text(`INVOICE NO: ${invoiceNo}`, 117, 69);
+            doc.text(`Address:`, 20, 79);
+            doc.text(`${address}`, 43, 79);
+            doc.text(`____________________`, 42, 79.5);
 
-            doc.rect(20, 76, 173, 10);
-            doc.text(`ADDRESS: ${address}`, 22, 82.5);
+            doc.text(`LPO Number:`, 103, 79);
+            doc.text(`${lpo}`, 136, 79);
+            doc.text(`_____________________`, 135, 79.5);
 
-            doc.rect(20, 86, 85, 10);
-            doc.rect(65, 86, 40, 10);
-            doc.text(`LPO NO:`, 22, 92.5);
-            doc.text(`${lpo}`, 67, 92.5);
+            doc.text(`Contact:`, 20, 89);
+            doc.text(`${contact}`, 42, 89);
+            doc.text(`____________________`, 41, 89.5);
 
-            doc.rect(105, 86, 88, 10);
-            doc.rect(146, 86, 47, 10);
-            doc.text(`CONTACT:`, 107, 92.5);
-            doc.text(`${contact}`, 148, 92.5);
+            doc.text(`Delivery no/Job Card no:`, 103, 89);
+            doc.text(`${deliveryNo}`, 160, 89);
+            doc.text(`_____________`, 159, 89.5);
 
-            doc.rect(20, 96, 85, 15);
-            doc.rect(65, 96, 40, 15);
-            doc.text(`DELIVERY NO:`, 22, 104.5);
-            doc.text(`${deliveryNo}`, 67, 104.5);
+            doc.text(`Tel:`, 20, 99);
+            doc.text(`${tel}`, 41, 99);
+            doc.text(`____________________`, 37, 99.5);
 
-            doc.rect(105, 96, 88, 15);
-            doc.rect(146, 96, 47, 15);
-            doc.text(`TEL:`, 107, 104.5);
-            doc.text(`${tel}`, 148, 104.5);
+            doc.text(`Date:`, 103, 99);
+            doc.text(`${dated}`, 136, 99);
+            doc.text(`____________________`, 132, 99.5);
 
-            doc.rect(20, 116, 85, 10);
-            doc.rect(65, 116, 40, 10);
-            doc.text(`DATE:`, 22, 122.5);
-            doc.text(`${dated}`, 67, 122.5);
+            doc.text(`PIN Number:`, 103, 109);
+            doc.text(`P051398673W`, 136, 109);
 
-            doc.rect(20, 136, 20, 10);
-            doc.text(`ITEM`, 24, 142);
+            doc.rect(19, 118, 17, 15);
+            doc.text(`ITEM CODE`, 21, 124, { maxWidth: 21 });
 
-            doc.rect(40, 136, 113, 10);
-            doc.text(`DESCRIPTION`, 43, 142);
+            doc.rect(36, 118, 90, 15);
+            doc.text(`DESCRIPTION`, 38, 124);
 
-            doc.rect(153, 136, 20, 10);
-            doc.text(`QTY`, 157, 142);
+            doc.rect(126, 118, 13, 15); 
+            doc.text(`QTY`, 128, 124);
 
-            doc.rect(173, 136, 20, 10);
-            doc.text(`UNIT PRICE`, 177, 142);
+            doc.rect(139, 118, 27, 15);
+            doc.text(`UNIT PRICE`, 141, 124, { maxWidth: 20 });
 
-            doc.rect(193, 136, 20, 10);
-            doc.text(`TOTAL COST`, 197, 142);
+            doc.rect(166, 118, 30, 15);
+            doc.text(`TOTAL COST`, 168, 124, { maxWidth: 20 });
 
             // Adding items
-            let yPos = 146;
+            let yPos = 133;
             const items = document.querySelectorAll('.ite');
             items.forEach((item, index) => {
                 const itemCode = item.querySelector('.item-code').value;
@@ -207,36 +208,47 @@
                 const unitPrice = item.querySelector('.item-unit').value;
                 const totalCost = (parseFloat(unitPrice) * parseFloat(quantity)).toFixed(2);
 
-                doc.rect(20, yPos, 20, 10);
-                doc.text(`${itemCode}`, 22, yPos+6.5);
+                doc.rect(19, yPos, 17, 15);
+                doc.text(`${itemCode}`, 21, yPos+6.5);
                 
-                doc.rect(40, yPos, 113, 10);
-                doc.text(` ${description}`, 42, yPos+6.5);
+                doc.rect(36, yPos, 90, 15);
+                doc.text(` ${description}`, 37, yPos+6.5, { maxWidth: 90 });
                 
-                doc.rect(153, yPos, 20, 10);
-                doc.text(`${quantity}`, 155, yPos+6.5);
+                doc.rect(126, yPos, 13, 15);
+                doc.text(`${quantity}`, 128, yPos+6.5);
                 
-                doc.rect(173, yPos, 20, 10);
-                doc.text(`${unitPrice}`, 175, yPos+6.5);
+                doc.rect(139, yPos, 27, 15);
+                doc.text(`${unitPrice}`, 140, yPos+6.5);
 
-                doc.rect(193, yPos, 20, 10);
-                doc.text(`${totalCost}`, 195, yPos+6.5);
+                doc.rect(166, yPos, 30, 15);
+                doc.text(`${totalCost}`, 168, yPos+6.5);
 
-                yPos += 10; // Adding some space between items
+                yPos += 15; // Adding some space between items
             });
 
+            // Adding totals
+            doc.rect(19, yPos, 177, 35);
+            doc.rect(139, yPos, 27, 10);
+            doc.text(`TOTAL:`, 141, yPos+6.5);
+            doc.rect(166, yPos, 30, 10);
+            doc.text(`${total.toFixed(2)}`, 168, yPos+6.5);
+
+            yPos += 10;
+            doc.rect(139, yPos, 27, 10);
+            doc.text(`VAT:`, 141, yPos+6.5);
+            doc.rect(166, yPos, 30, 10);
+            doc.text(`${vat.toFixed(2)}`, 168, yPos+6.5);
+
+            yPos += 10;
+            doc.rect(139, yPos, 27, 15);
+            doc.text(`GRAND TOTAL:`, 141, yPos+6.5, {maxWidth:30});
+            doc.rect(166, yPos, 30, 15);
+            doc.text(`${grandTotal.toFixed(2)}`, 168, yPos+6.5);
+
             yPos += 15;
-
-            doc.rect(20, yPos, 173, 10);
-            doc.text(`TOTAL: ${total.toFixed(2)}`, 22, yPos+6.5);
-
-            yPos += 10;
-            doc.rect(20, yPos, 173, 10);
-            doc.text(`VAT (16%): ${vat.toFixed(2)}`, 22, yPos+6.5);
-
-            yPos += 10;
-            doc.rect(20, yPos, 173, 10);
-            doc.text(`GRAND TOTAL: ${grandTotal.toFixed(2)}`, 22, yPos+6.5);
+            doc.text(`Signed:`, 20, yPos); 
+            img.src = 'images/image.png'; // Replace with your image path
+            doc.addImage(img, 'PNG', 10, 10, 50, 35);  
 
             // Saving the PDF
             doc.save("invoice.pdf");
