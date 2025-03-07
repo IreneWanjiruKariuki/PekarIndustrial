@@ -50,9 +50,9 @@
                 <label for="description1">DESCRIPTION:</label>
                 <textarea id="description1" class="item-description" required></textarea>
                 <label for="unit1">UNIT:</label>
-                <input type="number" id="unit1" class="item-unit" required>
+                <input type="text" id="unit1" class="item-unit" required>
                 <label for="quantity1">QTY:</label>
-                <input type="number" id="quantity1" class="item-quantity" required>
+                <input type="text" id="quantity1" class="item-quantity" required>
             </div>
         </div>
         <button type="button" onclick="addItem()">Add Item</button><br><br>
@@ -73,9 +73,9 @@
             <label for="description${itemCount}">DESCRIPTION:</label>
             <textarea id="description${itemCount}" class="item-description" required></textarea>
             <label for="unit${itemCount}">UNIT:</label>
-            <input type="number" id="unit${itemCount}" class="item-unit" required>
+            <input type="text" id="unit${itemCount}" class="item-unit" required>
             <label for="quantity${itemCount}">QTY:</label>
-            <input type="number" id="quantity${itemCount}" class="item-quantity" required>
+            <input type="text" id="quantity${itemCount}" class="item-quantity" required>
             `;
             container.appendChild(newItem);
         }
@@ -123,44 +123,56 @@
             doc.setFontSize(14);
             doc.setLineWidth(0.2);
             doc.rect(20, 63, 90, 10);
-            doc.text(`DELIVER TO: ${deliverTo}`, 22, 69);
+            doc.setTextColor(50, 50, 50);
+            doc.text(`DELIVER TO:`, 22, 69);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`${deliverTo}`, 54, 69);
 
             doc.rect(115, 63, 80, 10);
-            doc.text(`DELIVERY NO: ${deliveryNo}`, 117, 69);
+            doc.setTextColor(50, 50, 50);
+            doc.text(`DELIVERY NO:`, 117, 69);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`${deliveryNo}`, 151, 69);
 
             doc.rect(20, 76, 173, 10);
 
             doc.rect(20, 86, 85, 10);
             doc.rect(65, 86, 40, 10);
+            doc.setTextColor(50, 50, 50);
             doc.text(`LPO/INVOICE NO:`, 22, 92.5);
+            doc.setTextColor(0, 0, 0);
             doc.text(`${lpo}`, 67, 92.5);
 
             doc.rect(105, 86, 88, 10);
             doc.rect(146, 86, 47, 10);
+            doc.setTextColor(50, 50, 50);
             doc.text(`DATED:`, 107, 92.5);
+            doc.setTextColor(0, 0, 0);
             doc.text(`${dated}`, 148, 92.5);
 
             doc.rect(20, 96, 85, 15);
             doc.rect(65, 96, 40, 15);
+            doc.setTextColor(50, 50, 50);
             doc.text(`DELIVERY DATE:`, 22, 104.5);
+            doc.setTextColor(0, 0, 0);
             doc.text(`${deliveryDate}`, 67, 104.5);
 
             doc.rect(105, 96, 88, 15);
             doc.rect(146, 96, 47, 15);
+            doc.setTextColor(50, 50, 50);
             doc.text(`DELIVERED BY:`, 107, 104.5);
+            doc.setTextColor(0, 0, 0);
             doc.text(`${deliveredBy}`, 148, 104.5);
 
-            doc.rect(20, 116, 20, 10);
-            doc.text(`ITEM`, 24, 122);
+            doc.setTextColor(128, 128, 128);
+            doc.setFont("helvetica", "bold");
+            doc.text(`ITEM`, 20, 122);
+            doc.text(`DESCRIPTION`, 40, 122);
+            doc.text(`UNIT`, 153, 122);
+            doc.text(`QTY`, 173, 122);
+            doc.setTextColor(0, 0, 0);
+            doc.setFont("helvetica", "normal");
 
-            doc.rect(40, 116, 113, 10);
-            doc.text(`DESCRIPTION`, 43, 122);
-
-            doc.rect(153, 116, 20, 10);
-            doc.text(`UNIT`, 157, 122);
-
-            doc.rect(173, 116, 20, 10);
-            doc.text(`QTY`, 177, 122);
             // Adding items
             let yPos = 126;
             const items = document.querySelectorAll('.ite');
@@ -170,25 +182,26 @@
                 const unit = item.querySelector('.item-unit').value;
                 const quantity = item.querySelector('.item-quantity').value;
 
-                doc.rect(20, yPos, 20, 10);
-                doc.text(`${itemName}`, 22, yPos+6.5);
                 
-                doc.rect(40, yPos, 113, 10);
-                doc.text(` ${description}`, 42, yPos+6.5);
+                doc.text(`${itemName}`, 20, yPos+6.5);
                 
-                doc.rect(153, yPos, 20, 10);
-                doc.text(`${unit}`, 155, yPos+6.5);
                 
-                doc.rect(173, yPos, 20, 10);
-                doc.text(`${quantity}`, 175, yPos+6.5);
-                yPos += 10; // Adding some space between items
+                doc.text(` ${description}`, 40, yPos+6.5, { maxWidth: 100 });
+                
+                
+                doc.text(`${unit}`, 153, yPos+6.5);
+                
+                
+                doc.text(`${quantity}`, 173, yPos+6.5);
+                yPos += 15; // Adding some space between items
             });
 
             yPos+=15;
+            doc.setFont("helvetica", "bold");
             doc.rect(20, yPos, 173, 35);
-            doc.text(`RECEIVED IN GOOD CONDITION BY:`, 22, yPos+6.5);
+            doc.text(`Received in good condition by:`, 22, yPos+6.5);
             doc.text(`....................................................`, 22, yPos+16.5);
-            doc.text(`NAME, SIGNATURE AND STAMP`, 22, yPos+26.5);
+            doc.text(`Name, Signature and Stamp`, 22, yPos+26.5);
 
             // Saving the PDF
             doc.save("delivery_note.pdf");

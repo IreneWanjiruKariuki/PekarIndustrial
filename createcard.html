@@ -54,9 +54,9 @@
         <div id="itemDescriptionContainer">
             <div class="item-description">
                 <label for="machineSerialNumber1">ITEM/MACHINE SERIAL NUMBER:</label>
-                <input type="text" id="machineSerialNumber1" required>
+                <input type="text" id="machineSerialNumber1" class= "machine-serial-number" required>
                 <label for="jobDescription1">JOB DESCRIPTION/INSTRUCTION:</label>
-                <textarea id="jobDescription1" required></textarea>
+                <textarea id="jobDescription1" class="job-description" required></textarea>
             </div>
         </div>
         <button type="button" onclick="addItem()">Add item/machine</button><br><br>
@@ -66,11 +66,11 @@
                 <label for="sparePart1">SPARES USED:</label>
                 <input type="text" id="sparePart1" class="spare-part-name" required>
                 <label for="quantity1">QUANTITY:</label>
-                <input type="number" id="quantity1" class="spare-part-quantity" required>
+                <input type="text" id="quantity1" class="spare-part-quantity" required>
                 <label for="unitCost1">UNIT COST:</label>
-                <input type="number" id="unitCost1" class="spare-part-unit-cost" required>
+                <input type="text" id="unitCost1" class="spare-part-unit-cost" required>
                 <label for="totalCost1">TOTAL:</label>
-                <input type="number" id="totalCost1" class="spare-part-total-cost" required>
+                <input type="text" id="totalCost1" class="spare-part-total-cost" required>
             </div>
         </div>
         <button type="button" onclick="addSparePart()">Add Spare Part</button><br><br>
@@ -89,9 +89,9 @@
             newItem.classList.add('item-description');
             newItem.innerHTML = `
                 <label for="machineSerialNumber${itemCount}">ITEM/MACHINE SERIAL NUMBER:</label>
-                <input type="text" id="machineSerialNumber${itemCount}" required>
+                <input type="text" id="machineSerialNumber${itemCount}" class="machine-serial-number" required>
                 <label for="jobDescription${itemCount}">JOB DESCRIPTION/INSTRUCTION:</label>
-                <textarea id="jobDescription${itemCount}" required></textarea>
+                <textarea id="jobDescription${itemCount}" class="job-description" required></textarea>
             `;
             container.appendChild(newItem);
         }
@@ -105,11 +105,11 @@
                 <label for="sparePart${sparePartCount}">SPARES USED:</label>
                 <input type="text" id="sparePart${sparePartCount}" class="spare-part-name" required>
                 <label for="quantity${sparePartCount}">QUANTITY:</label>
-                <input type="number" id="quantity${sparePartCount}" class="spare-part-quantity" required>
+                <input type="text" id="quantity${sparePartCount}" class="spare-part-quantity" required>
                 <label for="unitCost${sparePartCount}">UNIT COST:</label>
-                <input type="number" id="unitCost${sparePartCount}" class="spare-part-unit-cost" required>
+                <input type="text" id="unitCost${sparePartCount}" class="spare-part-unit-cost" required>
                 <label for="totalCost${sparePartCount}">TOTAL:</label>
-                <input type="number" id="totalCost${sparePartCount}" class="spare-part-total-cost" required>
+                <input type="text" id="totalCost${sparePartCount}" class="spare-part-total-cost" required>
             `;
             container.appendChild(newSparePart);
         }
@@ -126,8 +126,6 @@
             const lpo = document.getElementById('lpo').value;
             const dateStarted = document.getElementById('dateStarted').value;
             const dateFinished = document.getElementById('dateFinished').value;
-            const machineSerialNumber = document.getElementById('machineSerialNumber').value;
-            const jobDescription = document.getElementById('jobDescription').value;
 
             // Ensure jsPDF is properly loaded
             if (!jsPDF) {
@@ -157,112 +155,107 @@
             doc.setFont("helvetica", "normal");
 
             // Adding form details
-            doc.setFontSize(14);
-            doc.setLineWidth(0.2);
+            doc.setFontSize(13);
+            doc.setLineWidth(0.1);
     
             // Adding Date and Job Number
-            doc.text(`DATE: ${document.getElementById('date').value}`, 20, 68);
-            doc.text(`JOB NO: ${document.getElementById('jobNumber').value}`, 140, 68);
+            doc.setTextColor(50, 50, 50);
+            doc.text(`DATE:`, 20, 68);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`${document.getElementById('date').value}`, 35, 68);
+            doc.setTextColor(50, 50, 50);
+            doc.text(`JOB NO:`, 140, 68);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`${document.getElementById('jobNumber').value}`, 165, 68);
     
             // Customer and Technician Info
             doc.rect(20, 72, 180, 9);
-            doc.text(`CUSTOMER: ${document.getElementById('customerName').value}`, 22, 78);
+            doc.setTextColor(50, 50, 50);
+            doc.text(`CUSTOMER:`, 22, 78);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`${document.getElementById('customerName').value}`, 50, 78);
     
             doc.rect(20, 81, 90, 15);
             doc.rect(20, 81, 40, 15);
+            doc.setTextColor(50, 50, 50);
             doc.text("TECHNICIAN NAME:", 22, 87, { maxWidth: 40 });
+            doc.setTextColor(0, 0, 0);
             doc.text(`${document.getElementById('technicianName').value}`, 62, 87);
     
             doc.rect(110, 81, 90, 15);
             doc.rect(110, 81, 40, 15);
+            doc.setTextColor(50, 50, 50);
             doc.text("LPO/REF:", 112, 87, { maxWidth: 50 });
+            doc.setTextColor(0, 0, 0);
             doc.text(`${document.getElementById('lpo').value}`, 152, 87);
     
             doc.rect(20, 96, 90, 15);
             doc.rect(20, 96, 40, 15);
+            doc.setTextColor(50, 50, 50);
             doc.text("TIME JOB STARTED:", 22, 102, { maxWidth: 40 });
+            doc.setTextColor(0, 0, 0);
             doc.text(`${document.getElementById('dateStarted').value}`, 62, 102);
     
             doc.rect(110, 96, 90, 15);
             doc.rect(110, 96, 40, 15);
+            doc.setTextColor(50, 50, 50);
             doc.text("TIME JOB FINISHED:", 112, 102, { maxWidth: 40 });
+            doc.setTextColor(0, 0, 0);
             doc.text(`${document.getElementById('dateFinished').value}`, 152, 102);
     
             // Item Description
-            doc.rect(20, 121, 67, 10);
+            doc.setFont("helvetica", "bold");
+            doc.setTextColor(128, 128, 128);
             doc.text("ITEM/MACHINE SERIAL NO", 22, 127, { maxWidth: 70 });
-    
-            doc.rect(87, 121, 115, 10);
-            doc.text("JOB DESCRIPTION/INSTRUCTION:", 89, 127);
+            doc.text("JOB DESCRIPTION/INSTRUCTION:", 100, 127);
     
             // Job Description Content
-            doc.rect(20, 131, 67, 30);
-            doc.text(`${document.getElementById('machineSerialNumber').value}`, 22, 136);
-            doc.rect(87, 131, 115, 30);
-            doc.text(`${document.getElementById('jobDescription').value}`, 89, 136, { maxWidth: 110 });
-    
-            // Spare Parts Table
-            yPos = 170;
-            doc.rect(20, yPos, 85, 10);
-            doc.text("SPARES USED", 40, yPos + 7);
-            doc.rect(105, yPos, 25, 10);
-            doc.text("QTY", 112, yPos + 7);
-            doc.rect(130, yPos, 35, 10);
-            doc.text("UNIT COST", 133, yPos + 7);
-            doc.rect(165, yPos, 35, 10);
-            doc.text("TOTAL", 175, yPos + 7);
-    
-    yPos += 10;
-    const spareParts = document.querySelectorAll('.spare-part');
-    spareParts.forEach((part, index) => {
-        if (index === 4) {
-            doc.addPage();
-            const img = new Image();
-            img.src = 'images/image.png'; // Replace with your image path
-            doc.addImage(img, 'PNG', 10, 10, 50, 35);
-    
             doc.setFont("helvetica", "normal");
-            doc.setFontSize(10);
-            doc.setTextColor(128, 128, 128);
-            doc.text("Plumbing works, Mechanical & Electrical plant installations HVAC, Infra-Red thermography and other maintenance solutions and General Contractors", 70, 15, { maxWidth: 140 });
-            doc.text("Location: Kasarani Mwiki Road", 70, 25);
-            doc.text("P.O BOX 4384-00200 City Square Nairobi", 70, 31);
-            doc.text("Email: pekar.industrial@gmail.com", 70, 37);
-            doc.text("Cell Phone: 0722301274/0721301274", 70, 43);
-            // Adding content to PDF
-            doc.setFont("helvetica", "bold");
-            doc.setFontSize(18);
             doc.setTextColor(0, 0, 0);
-            doc.setLineWidth(0.7);
-            doc.rect(15, 50, 180, 10);
-            doc.text("JOB CARD/EQUIPMENT HANDOVER", 55, 57);
+            let yPos = 131;
+            const itemDescriptions = document.querySelectorAll('.item-description');
+            itemDescriptions.forEach((item, index)=>{
+                const machineSerialNumber = item.querySelector(`.machine-serial-number`).value;
+                const jobDescription = item.querySelector(`.job-description`).value;
+                doc.text(`${machineSerialNumber}`, 22, yPos + 6);
+                doc.text(`${jobDescription}`, 100, yPos + 6, { maxWidth: 110 });
+                yPos += 15;
+            })
+            
+            // Spare Parts Table
+            yPos += 10;
+            doc.setTextColor(128, 128, 128);
+            doc.setFont("helvetica", "bold");
+            doc.text("SPARES USED", 20, yPos + 7);
+            doc.text("QTY", 104, yPos + 7);
+            doc.text("UNIT COST", 130, yPos + 7);
+            doc.text("TOTAL", 165, yPos + 7);
+            doc.setTextColor(0, 0, 0);
+    
+            yPos += 10;
             doc.setFont("helvetica", "normal");
+            const spareParts = document.querySelectorAll('.spare-part');
+            spareParts.forEach((part, index) => {
+                const sparePartName = part.querySelector('.spare-part-name').value;
+                const quantity = part.querySelector('.spare-part-quantity').value;
+                const unitCost = part.querySelector('.spare-part-unit-cost').value;
+                const totalCost = part.querySelector('.spare-part-total-cost').value;
 
-            // Adding form details
-            doc.setFontSize(14);
-            doc.setLineWidth(0.2);
-            yPos = 70;
-        }
-
-        const sparePartName = part.querySelector('.spare-part-name').value;
-        const quantity = part.querySelector('.spare-part-quantity').value;
-        const unitCost = part.querySelector('.spare-part-unit-cost').value;
-        const totalCost = part.querySelector('.spare-part-total-cost').value;
-
-        doc.rect(20, yPos, 85, 10);
-        doc.text(sparePartName, 22, yPos + 7);
-        doc.rect(105, yPos, 25, 10);
-        doc.text(quantity, 113, yPos + 7);
-        doc.rect(130, yPos, 35, 10);
-        doc.text(unitCost, 133, yPos + 7);
-        doc.rect(165, yPos, 35, 10);
-        doc.text(totalCost, 168, yPos + 7);
+        
+        doc.text(sparePartName, 20, yPos + 7);
+        
+        doc.text(quantity, 105, yPos + 7);
+        
+        doc.text(unitCost, 130, yPos + 7);
+        
+        doc.text(totalCost, 165, yPos + 7);
 
         yPos += 10;
     });
 
+    doc.setFont("helvetica", "bold");
     doc.text("Installation, testing, and commissioning done and system left in good working condition.", 20, yPos + 10, { maxWidth: 180 });
-            doc.text("Technician's Name and Signature: .....................................................", 20, yPos + 30);
+            doc.text("Technician's Name and Signature: .....................................................", 20, yPos + 25);
 
     
             // Saving the PDF
