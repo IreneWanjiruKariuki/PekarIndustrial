@@ -169,7 +169,7 @@
             doc.text(`ITEM`, 20, 122);
             doc.text(`DESCRIPTION`, 40, 122);
             doc.text(`UNIT`, 153, 122);
-            doc.text(`QTY`, 173, 122);
+            doc.text(`QTY`, 177, 122);
             doc.setTextColor(0, 0, 0);
             doc.setFont("helvetica", "normal");
 
@@ -189,18 +189,18 @@
                 doc.text(` ${description}`, 40, yPos+6.5, { maxWidth: 100 });
                 
                 
-                doc.text(`${unit}`, 153, yPos+6.5);
+                doc.text(`${unit}`, 152, yPos+6.5);
                 
                 
-                doc.text(`${quantity}`, 173, yPos+6.5);
+                doc.text(`${quantity}`, 177, yPos+6.5);
                 yPos += 15; // Adding some space between items
             });
 
-            yPos+=15;
+            yPos+=10;
             doc.setFont("helvetica", "bold");
             doc.rect(20, yPos, 173, 35);
             doc.text(`Received in good condition by:`, 22, yPos+6.5);
-            doc.text(`....................................................`, 22, yPos+16.5);
+            doc.text(`..........................................................`, 22, yPos+16.5);
             doc.text(`Name, Signature and Stamp`, 22, yPos+26.5);
 
             // Saving the PDF

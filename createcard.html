@@ -69,8 +69,7 @@
                 <input type="text" id="quantity1" class="spare-part-quantity" required>
                 <label for="unitCost1">UNIT COST:</label>
                 <input type="text" id="unitCost1" class="spare-part-unit-cost" required>
-                <label for="totalCost1">TOTAL:</label>
-                <input type="text" id="totalCost1" class="spare-part-total-cost" required>
+                
             </div>
         </div>
         <button type="button" onclick="addSparePart()">Add Spare Part</button><br><br>
@@ -96,6 +95,19 @@
             container.appendChild(newItem);
         }
 
+        function calculateTotals() {
+            let total = 0;
+            const items = document.querySelectorAll('.spare-part');
+            items.forEach((sparePart, index) => {
+                const unitPrice = parseFloat(sparePart.querySelector('.spare-part-unit-cost').value) || 0;
+                const quantity = parseFloat(sparePart.querySelector('.spare-part-quantity').value) || 0;
+                const totalCost = unitPrice * quantity;
+                total += totalCost;
+            });
+
+            return { total };
+        }
+
         function addSparePart() { 
             sparePartCount++;
             const container = document.getElementById('sparePartsContainer');
@@ -108,13 +120,14 @@
                 <input type="text" id="quantity${sparePartCount}" class="spare-part-quantity" required>
                 <label for="unitCost${sparePartCount}">UNIT COST:</label>
                 <input type="text" id="unitCost${sparePartCount}" class="spare-part-unit-cost" required>
-                <label for="totalCost${sparePartCount}">TOTAL:</label>
-                <input type="text" id="totalCost${sparePartCount}" class="spare-part-total-cost" required>
+                
             `;
             container.appendChild(newSparePart);
         }
 
         async function generatePDF() {
+            const { total } = calculateTotals();
+
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
@@ -223,7 +236,7 @@
             })
             
             // Spare Parts Table
-            yPos += 10;
+            yPos += 7;
             doc.setTextColor(128, 128, 128);
             doc.setFont("helvetica", "bold");
             doc.text("SPARES USED", 20, yPos + 7);
@@ -239,7 +252,8 @@
                 const sparePartName = part.querySelector('.spare-part-name').value;
                 const quantity = part.querySelector('.spare-part-quantity').value;
                 const unitCost = part.querySelector('.spare-part-unit-cost').value;
-                const totalCost = part.querySelector('.spare-part-total-cost').value;
+                const totalCost = (parseFloat(unitCost) * parseFloat(quantity)).toFixed(2);
+                
 
         
         doc.text(sparePartName, 20, yPos + 7);
