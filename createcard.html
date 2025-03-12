@@ -6,6 +6,27 @@
     <title>Create job card</title>
     <link rel="stylesheet" href="css.css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        function generateJobNumber() {
+            let lastJobNumber = localStorage.getItem('lastJobNumber');
+            if (!lastJobNumber) {
+                lastJobNumber = 0;
+            }
+            const newJobNumber = parseInt(lastJobNumber) + 1;
+            localStorage.setItem('lastJobNumber', newJobNumber);
+            return `JOB-${newJobNumber}`;
+        }
+
+        function resetJobNumber() {
+            localStorage.removeItem('lastJobNumber');
+            alert("Job number has been reset.");
+            document.getElementById('jobNumber').value = generateJobNumber(); // Update the job number after reset
+        }
+
+        window.onload = function() {
+            document.getElementById('jobNumber').value = generateJobNumber(); // Set the job number when the page loads
+        }
+    </script>
 </head>
 <body background="images/img5.jpg">
     <nav>
@@ -29,11 +50,11 @@
         
         <h2 style="text-align: center;">JOB CARD/EQUIPMENTMENT HANDOVER</h2>
         
-        <label for="date">DATE:</label>
-        <input type="date" id="date" required><br><br>
-
         <label for="jobNumber">JOB NUMBER:</label>
         <input type="text" id="jobNumber" required><br><br>
+
+        <label for="date">DATE:</label>
+        <input type="date" id="date" required><br><br>
 
         <label for="customerName">CUSTOMER:</label>
         <input type="text" id="customerName" required><br><br>
@@ -75,6 +96,8 @@
         <button type="button" onclick="addSparePart()">Add Spare Part</button><br><br>
 
         <button type="button" onclick="generatePDF()">Download as PDF</button>
+
+        <button type="button" onclick="resetJobNumber()">Reset Job Number</button>
     </form>
 
     <script>

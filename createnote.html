@@ -6,6 +6,27 @@
     <title>Create Delivery Note</title>
     <link rel="stylesheet" href="css.css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        function generateDeliveryNo() {
+            let lastDeliveryNo = localStorage.getItem('lastDeliveryNo');
+            if (!lastDeliveryNo) {
+                lastDeliveryNo = 0;
+            }
+            const newDeliveryNo = parseInt(lastDeliveryNo) + 1;
+            localStorage.setItem('lastDeliveryNo', newDeliveryNo);
+            return `DEL-${newDeliveryNo}`;
+        }
+
+        function resetDeliveryNo() {
+            localStorage.removeItem('lastDeliveryNo');
+            alert("Delivery number has been reset.");
+            document.getElementById('deliveryNo').value = generateDeliveryNo(); // Update the delivery number after reset
+        }
+
+        window.onload = function() {
+            document.getElementById('deliveryNo').value = generateDeliveryNo(); // Set the delivery number when the page loads
+        }
+    </script>
 </head>
 <body background="images/img5.jpg">
     <nav>
@@ -23,12 +44,12 @@
         <img src="images/image.png" width="1255" height="150" class="d-inline-block align-top" alt="Logo">
     </div>
     <form id="deliveryNoteForm" style="background-color: white; width: 60%; padding: 20px;">
-        <h2>DELIVERY NOTE</h2>
-        <label for="deliverTo">DELIVER TO:</label>
-        <input type="text" id="deliverTo" required><br><br>
-
+        <h2 style="text-align: center;">DELIVERY NOTE</h2>
         <label for="deliveryNo">DELIVERY NO:</label>
         <input type="text" id="deliveryNo" required><br><br>
+
+        <label for="deliverTo">DELIVER TO:</label>
+        <input type="text" id="deliverTo" required><br><br>
 
         <label for="lpo">LPO/INVOICE NO:</label>
         <input type="text" id="lpo" required><br><br>
@@ -58,6 +79,8 @@
         <button type="button" onclick="addItem()">Add Item</button><br><br>
 
         <button type="button" onclick="generatePDF()">Download as PDF</button>
+
+        <button type="button" onclick="resetDeliveryNo()">Reset Delivery Number</button>
     </form>
     <script>
         let itemCount = 1;
@@ -132,7 +155,7 @@
             doc.setTextColor(50, 50, 50);
             doc.text(`DELIVERY NO:`, 117, 69);
             doc.setTextColor(0, 0, 0);
-            doc.text(`${deliveryNo}`, 151, 69);
+            doc.text(`${deliveryNo}`, 153, 69);
 
             doc.rect(20, 76, 173, 10);
 
