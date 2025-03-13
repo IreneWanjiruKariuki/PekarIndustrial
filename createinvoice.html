@@ -10,11 +10,11 @@
         function generateInvoiceNo() {
             let lastInvoiceNo = localStorage.getItem('lastInvoiceNo');
             if (!lastInvoiceNo) {
-                lastInvoiceNo = 0;
+                lastInvoiceNo = 254;
             }
             const newInvoiceNo = parseInt(lastInvoiceNo) + 1;
             localStorage.setItem('lastInvoiceNo', newInvoiceNo);
-            return `INV-${newInvoiceNo}`;
+            return `${String(newInvoiceNo).padStart(3, '0')}`;
         }
 
         function resetInvoiceNo() {
@@ -156,9 +156,10 @@
             doc.setTextColor(128, 128, 128);
             doc.text("Plumbing works, Mechanical & Electrical plant installations HVAC, Infra-Red thermography and other maintenance solutions and General Contractors", 70, 15, { maxWidth: 140 });
             doc.text("Location: Kasarani Mwiki Road", 70, 25);
-            doc.text("P.O BOX 4384-00200 City Square Nairobi", 70, 31);
-            doc.text("Email: pekar.industrial@gmail.com", 70, 37);
-            doc.text("Cell Phone: 0722301274/0721301274", 70, 43);
+            doc.text("P.O BOX 4384-00200 City Square Nairobi", 70, 29.5);
+            doc.text("Email: pekar.industrial@gmail.com", 70, 33.5);
+            doc.text("Cell Phone: 0722301274/0721301274", 70, 38);
+            doc.text("PIN Number: P051398673W", 70, 42);
             // Adding content to PDF
             doc.setFont("helvetica", "bold");
             doc.setFontSize(18);
@@ -169,80 +170,75 @@
             doc.setFont("helvetica", "normal");
 
             // Adding form details
-            doc.setFontSize(14);
+            doc.setFontSize(11);
             doc.setLineWidth(0.2);
             doc.setTextColor(50, 50, 50);
-            doc.text(`Name:`, 20, 69);
+            doc.text(`Name:`, 20, 66);
             doc.setTextColor(0, 0, 0);
-            doc.text(`${name}`, 38, 69);
-            doc.text(`_____________________`, 37, 69.5);
+            doc.text(`${name}`, 36, 66);
+            doc.text(`_____________________`, 35, 66.5);
         
             doc.setTextColor(50, 50, 50);
-            doc.text(`Invoice Number:`, 103, 69);
+            doc.text(`Invoice Number:`, 103, 66);
             doc.setTextColor(0, 0, 0);
-            doc.text(`${invoiceNo}`, 142, 69);
-            doc.text(`___________________`, 141, 69.5);
+            doc.text(`${invoiceNo}`, 137, 66);
+            doc.text(`___________________`, 136, 66.5);
 
             doc.setTextColor(50, 50, 50);
-            doc.text(`Address:`, 20, 79);
+            doc.text(`Address:`, 20, 73);
             doc.setTextColor(0, 0, 0);
-            doc.text(`${address}`, 43, 79);
-            doc.text(`____________________`, 42, 79.5);
+            doc.text(`${address}`, 40, 73);
+            doc.text(`____________________`, 39, 73.5);
 
             doc.setTextColor(50, 50, 50);
-            doc.text(`LPO Number:`, 103, 79);
+            doc.text(`LPO Number:`, 103, 73);
             doc.setTextColor(0, 0, 0);
-            doc.text(`${lpo}`, 136, 79);
-            doc.text(`_____________________`, 135, 79.5);
+            doc.text(`${lpo}`, 133, 73);
+            doc.text(`_____________________`, 132, 73.5);
 
             doc.setTextColor(50, 50, 50);
-            doc.text(`Contact:`, 20, 89);
+            doc.text(`Contact:`, 20, 80);
             doc.setTextColor(0, 0, 0);
-            doc.text(`${contact}`, 42, 89);
-            doc.text(`____________________`, 41, 89.5);
+            doc.text(`${contact}`, 39, 80);
+            doc.text(`____________________`, 38, 80.5);
 
             doc.setTextColor(50, 50, 50);
-            doc.text(`Delivery no/Job Card no:`, 103, 89);
+            doc.text(`Delivery no/Job Card no:`, 103, 80);
             doc.setTextColor(0, 0, 0);
-            doc.text(`${deliveryNo}`, 160, 89);
-            doc.text(`_____________`, 159, 89.5);
+            doc.text(`${deliveryNo}`, 150, 80);
+            doc.text(`_____________`, 149, 80.5);
 
             doc.setTextColor(50, 50, 50);
-            doc.text(`Tel:`, 20, 99);
+            doc.text(`Tel:`, 20, 87);
             doc.setTextColor(0, 0, 0);
-            doc.text(`${tel}`, 41, 99);
-            doc.text(`____________________`, 37, 99.5);
+            doc.text(`${tel}`, 33, 87);
+            doc.text(`____________________`, 32, 87.5);
 
             doc.setTextColor(50, 50, 50);
-            doc.text(`Date:`, 103, 99);
+            doc.text(`Date:`, 103, 87);
             doc.setTextColor(0, 0, 0);
-            doc.text(`${dated}`, 136, 99);
-            doc.text(`____________________`, 132, 99.5);
-
-            doc.setTextColor(50, 50, 50);
-            doc.text(`PIN Number:`, 103, 109);
-            doc.setTextColor(0, 0, 0);
-            doc.text(`P051398673W`, 136, 109);
+            doc.text(`${dated}`, 118, 87);
+            doc.text(`____________________`, 117, 87.5);
 
            // doc.rect(19, 118, 17, 15);
             doc.setTextColor(128, 128, 128);
             doc.setFont("helvetica", "bold");
-            doc.text(`ITEM CODE`, 15, 121, { maxWidth: 21 });
+            doc.text(`ITEM CODE`, 15, 97, { maxWidth: 21 });
 
             //doc.rect(36, 118, 90, 15);
-            doc.text(`DESCRIPTION`, 38, 121);
+            doc.text(`DESCRIPTION`, 38, 97);
 
             //doc.rect(126, 118, 13, 15); 
-            doc.text(`QTY`, 128, 121);
+            doc.text(`QTY`, 128, 97);
 
            // doc.rect(139, 118, 27, 15);
-            doc.text(`UNIT PRICE`, 142, 121, { maxWidth: 20 });
+            doc.text(`UNIT PRICE`, 142, 97, { maxWidth: 20 });
 
             //doc.rect(166, 118, 30, 15);
-            doc.text(`TOTAL COST`, 168, 121, { maxWidth: 20 });
+            doc.text(`TOTAL COST`, 168, 97, { maxWidth: 20 });
 
             // Adding items
-            let yPos = 130;
+            let yPos = 102;
             doc.setTextColor(0, 0, 0);
             doc.setFont("helvetica", "normal");
             const items = document.querySelectorAll('.ite');
@@ -268,7 +264,7 @@
                 //doc.rect(166, yPos, 30, 15);
                 doc.text(`${totalCost}`, 168, yPos+6.5);
 
-                yPos += 15; // Adding some space between items
+                yPos += 12; // Adding some space between items
             });
 
             // Adding totals
@@ -281,7 +277,7 @@
             doc.setTextColor(0, 0, 0);
             doc.text(`${total.toFixed(2)}`, 168, yPos+6.5);
 
-            yPos += 10;
+            yPos += 8;
             //doc.rect(139, yPos, 27, 10);
             doc.setTextColor(128, 128, 128);
             doc.text(`VAT:`, 141, yPos+6.5);
@@ -289,29 +285,29 @@
             doc.setTextColor(0, 0, 0);
             doc.text(`${vat.toFixed(2)}`, 168, yPos+6.5);
 
-            yPos += 10;
+            yPos += 8;
             //doc.rect(139, yPos, 27, 15);
             doc.setTextColor(128, 128, 128);
             doc.text(`GRAND TOTAL:`, 141, yPos+6.5, {maxWidth:30});
             // doc.rect(166, yPos, 30, 15);
             doc.setTextColor(0, 0, 0);
-            doc.text(`${grandTotal.toFixed(2)}`, 168, yPos+10.5);
+            doc.text(`${grandTotal.toFixed(2)}`, 172, yPos+6.5);
 
 
-            yPos += 30;
+            yPos += 13;
             doc.setFont("helvetica", "normal");
-            doc.text(`Signed:`, 20, yPos-6); 
+            doc.text(`Signed:`, 20, yPos+7); 
             img.src = 'images/final_signature.jpg'; // Replace with your image path
-            doc.addImage(img, 'JPG',  40, yPos-17,25,25);
+            doc.addImage(img, 'JPG',  40, yPos-5,25,25);
             
-            yPos += 15;
-            doc.text(`______________________________________________`, 20, yPos+0.5);
-            doc.text(`FOR: PEKAR INDUSTRIAL AND CONSTRUCTION LTD`, 20, yPos);
+            yPos += 25;
+            doc.text(`______________________________________________`, 20, yPos);
+            doc.text(`FOR: PEKAR INDUSTRIAL AND CONSTRUCTION LTD`, 20, yPos-1);
 
-            yPos += 4.5;
-            doc.rect(10, yPos, 195, 18);
-            doc.text(`NOTE: Cheque to be drawn to Pekar Industrial and Construction Limited`, 20, yPos+6.5);
-            doc.text(`BANK: Consolidated Bank of Kenya A/C No.10011301000125, Branch:Koinange Street`, 12, yPos+12.5);
+            yPos += 3.5;
+            doc.rect(20, yPos, 180, 15);
+            doc.text(`NOTE: Cheque to be drawn to Pekar Industrial and Construction Limited`, 45, yPos+5);
+            doc.text(`BANK: Consolidated Bank of Kenya A/C No.10011301000125, Branch:Koinange Street`, 34, yPos+11);
 
 
             // Saving the PDF
