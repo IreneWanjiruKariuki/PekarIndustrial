@@ -143,61 +143,60 @@
             doc.setFont("helvetica", "normal");
 
             // Adding form details
-            doc.setFontSize(14);
+            doc.setFontSize(11);
             doc.setLineWidth(0.2);
-            doc.rect(20, 63, 90, 10);
+            doc.rect(20, 63, 90, 7);
             doc.setTextColor(50, 50, 50);
-            doc.text(`DELIVER TO:`, 22, 69);
+            doc.text(`DELIVER TO:`, 22, 67.5);
             doc.setTextColor(0, 0, 0);
-            doc.text(`${deliverTo}`, 54, 69);
+            doc.text(`${deliverTo}`, 54, 67.5);
 
-            doc.rect(115, 63, 80, 10);
+            doc.rect(115, 63, 80, 7);
             doc.setTextColor(50, 50, 50);
-            doc.text(`DELIVERY NO:`, 117, 69);
+            doc.text(`DELIVERY NO:`, 117, 67.5);
             doc.setTextColor(0, 0, 0);
-            doc.text(`${deliveryNo}`, 153, 69);
+            doc.text(`${deliveryNo}`, 153, 67.5);
 
-            doc.rect(20, 76, 173, 10);
-
-            doc.rect(20, 86, 85, 10);
-            doc.rect(65, 86, 40, 10);
+            doc.rect(20, 73, 85, 8);
+            doc.rect(65, 73, 40, 8);
             doc.setTextColor(50, 50, 50);
-            doc.text(`LPO/INVOICE NO:`, 22, 92.5);
+            doc.text(`LPO/INVOICE NO:`, 22, 77.5);
             doc.setTextColor(0, 0, 0);
-            doc.text(`${lpo}`, 67, 92.5);
+            doc.text(`${lpo}`, 67, 77.5);
 
-            doc.rect(105, 86, 88, 10);
-            doc.rect(146, 86, 47, 10);
+            doc.rect(105, 73, 88, 8);
+            doc.rect(146, 73, 47, 8);
             doc.setTextColor(50, 50, 50);
-            doc.text(`DATED:`, 107, 92.5);
+            doc.text(`DATED:`, 107, 77.5);
             doc.setTextColor(0, 0, 0);
-            doc.text(`${dated}`, 148, 92.5);
+            doc.text(`${dated}`, 148, 77.5);
 
-            doc.rect(20, 96, 85, 15);
-            doc.rect(65, 96, 40, 15);
+            doc.rect(20, 81, 85, 10);
+            doc.rect(65, 81, 40, 10);
             doc.setTextColor(50, 50, 50);
-            doc.text(`DELIVERY DATE:`, 22, 104.5);
+            doc.text(`DELIVERY DATE:`, 22, 85.5);
             doc.setTextColor(0, 0, 0);
-            doc.text(`${deliveryDate}`, 67, 104.5);
+            doc.text(`${deliveryDate}`, 67, 85.5);
 
-            doc.rect(105, 96, 88, 15);
-            doc.rect(146, 96, 47, 15);
+            doc.rect(105, 81, 88, 10);
+            doc.rect(146, 81, 47, 10);
             doc.setTextColor(50, 50, 50);
-            doc.text(`DELIVERED BY:`, 107, 104.5);
+            doc.text(`DELIVERED BY:`, 107, 85.5);
+            doc.text(`(Name & Signature)`, 107, 89.5);
             doc.setTextColor(0, 0, 0);
-            doc.text(`${deliveredBy}`, 148, 104.5);
+            doc.text(`${deliveredBy}`, 148, 85.5);
 
             doc.setTextColor(128, 128, 128);
             doc.setFont("helvetica", "bold");
-            doc.text(`ITEM`, 20, 122);
-            doc.text(`DESCRIPTION`, 40, 122);
-            doc.text(`UNIT`, 153, 122);
-            doc.text(`QTY`, 177, 122);
+            doc.text(`ITEM`, 20, 99);
+            doc.text(`DESCRIPTION`, 40, 99);
+            doc.text(`UNIT`, 153, 99);
+            doc.text(`QTY`, 177, 99);
             doc.setTextColor(0, 0, 0);
             doc.setFont("helvetica", "normal");
 
             // Adding items
-            let yPos = 126;
+            let yPos = 100;
             const items = document.querySelectorAll('.ite');
             items.forEach((item, index) => {
                 const itemName = item.querySelector('.item-name').value;
@@ -212,19 +211,19 @@
                 doc.text(` ${description}`, 40, yPos+6.5, { maxWidth: 100 });
                 
                 
-                doc.text(`${unit}`, 152, yPos+6.5);
+                doc.text(`${unit}`, 154, yPos+6.5);
                 
                 
                 doc.text(`${quantity}`, 177, yPos+6.5);
-                yPos += 15; // Adding some space between items
+                yPos += 12; // Adding some space between items
             });
 
-            yPos+=10;
+            yPos+=8;
             doc.setFont("helvetica", "bold");
-            doc.rect(20, yPos, 173, 35);
-            doc.text(`Received in good condition by:`, 22, yPos+6.5);
-            doc.text(`..........................................................`, 22, yPos+16.5);
-            doc.text(`Name, Signature and Stamp`, 22, yPos+26.5);
+            doc.rect(20, yPos, 173, 30);
+            doc.text(`Received in good condition by client representative:`, 22, yPos+6.5);
+            doc.text(`................................................................................`, 22, yPos+15.5);
+            doc.text(`Name, Signature and Stamp`, 22, yPos+23.5);
 
             // Saving the PDF
             doc.save("delivery_note.pdf");
