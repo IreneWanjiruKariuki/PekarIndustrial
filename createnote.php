@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,67 +42,79 @@
     </nav>
 
     <?php
-    if(isset($_POST['create_note'])){
-        $deliveryNo = mysqli_real_escape_string($conn, $_POST['delivery_no']);
-        $deliverTo = mysqli_real_escape_string($conn, $_POST['deliver_to']);
-        $lpo = mysqli_real_escape_string($conn, $_POST['lpo_no']);
-        $dated = mysqli_real_escape_string($conn, $_POST['dated']);
-        $deliveryDate = mysqli_real_escape_string($conn, $_POST['delivery_date']);
-        $deliveredBy = mysqli_real_escape_string($conn, $_POST['delivered_by']);
-    }
-    //$items = [];
-        //foreach ($_POST['items'] as $item) {
-            //$items[] = [
-                //'item' => mysqli_real_escape_string($conn, $item['item']),
-                //'description' => mysqli_real_escape_string($conn, $item['description']),
-                //'unit' => mysqli_real_escape_string($conn, $item['unit']),
-                //'quantity' => mysqli_real_escape_string($conn, $item['quantity']),
-            //];
-        //}
-    $insert_note = "INSERT INTO note (delivery_no,deliver_to,lpo_no,dated,delivery_date,delivered_by) 
-    VALUES ('$deliveryNo','$deliverTo','$lpo','$dated','$deliveryDate','$deliveredBy')";
+    require_once ("db_connect.php");
 
-    if($conn->query($insert_note) === True){
-        header('Location: viewnote.php');
+    // Check if the form is submitted
+    if ( isset($_POST['create_note'])) {
+        $deliver_to =mysqli_real_escape_string($conn, $_POST['deliverTo']);
+        $delivery_no =mysqli_real_escape_string($conn, $_POST['deliveryNo']);
+        $lpo_no =mysqli_real_escape_string($conn, $_POST['lpo']);
+        $dated = mysqli_real_escape_string($conn,$_POST['dated']);
+        $delivery_date = mysqli_real_escape_string($conn,$_POST['deliveryDate']);
+        $delivered_by =mysqli_real_escape_string($conn, $_POST['deliveredBy']);
+        $items = $_POST['items'];
+        $descriptions = $_POST['descriptions'];
+        $units = $_POST['units'];
+        $quantities = $_POST['quantities'];
+
+        // Insert each item in the note table
+        for ($i = 0; $i < count($items); $i++) {
+            $item = mysqli_real_escape_string($conn, $items[$i]);
+            $description = mysqli_real_escape_string($conn, $descriptions[$i]);
+            $unit = mysqli_real_escape_string($conn, $units[$i]);
+            $quantity = mysqli_real_escape_string($conn, $quantities[$i]);
+
+            $insert_note = "INSERT INTO note (deliver_to, delivery_no, lpo_no, dated, delivery_date, delivered_by, item, description, unit, quantity)
+                            VALUES ('$deliver_to', '$delivery_no', '$lpo_no', '$dated', '$delivery_date', '$delivered_by', '$item', '$description', '$unit', '$quantity')";
+
+            if (!$conn->query($insert_note)) {
+                echo "Error: " . $insert_note . "<br>" . $conn->error;
+            
+            }
+        }
+
+        echo "Delivery Note saved successfully!";
+        header("Location: viewnote.php");
         exit();
-    } else{
-        echo "Error: " . $insert_note . "<br>" . $conn->error;
+    
     }
+    $conn->close();
     ?>
+    
     <div class="cont">
         <img src="images/image.png" width="1255" height="150" class="d-inline-block align-top" alt="Logo">
     </div>
-    <form id="deliveryNoteForm" style="background-color: white; width: 60%; padding: 20px;">
+    <form id="deliveryNoteForm" method="POST" action="<?php print htmlspecialchars($_SERVER["PHP_SELF"]); ?>" style="background-color: white; width: 60%; padding: 20px;">
         <h2 style="text-align: center;">DELIVERY NOTE</h2>
         <label for="deliveryNo">DELIVERY NO:</label>
-        <input type="text" id="deliveryNo" required><br><br>
+        <input type="text" id="deliveryNo" name="deliveryNo" required><br><br>
 
         <label for="deliverTo">DELIVER TO:</label>
-        <input type="text" id="deliverTo" required><br><br>
+        <input type="text" id="deliverTo" name="deliverTo" required><br><br>
 
         <label for="lpo">LPO/INVOICE NO:</label>
-        <input type="text" id="lpo" required><br><br>
+        <input type="text" id="lpo" name="lpo" required><br><br>
 
         <label for="dated">DATED:</label>
-        <input type="date" id="dated" required><br><br>
+        <input type="date" id="dated" name="dated" required><br><br>
 
         <label for="deliveryDate">DELIVERY DATE:</label>
-        <input type="date" id="deliveryDate" required><br><br>
+        <input type="date" id="deliveryDate" name="deliveryDate" required><br><br>
 
         <label for="deliveredBy">DELIVERED BY:</label>
-        <input type="text" id="deliveredBy" required><br><br>
+        <input type="text" id="deliveredBy" name="deliveredBy" required><br><br>
 
         <h3>ITEMS</h3>
         <div id="itemsContainer">
             <div class="ite">
                 <label for="item1">ITEM:</label>
-                <input type="text" id="item1" class="item-name" required>
+                <input type="text" id="item1" name="items[]" class="item-name" required>
                 <label for="description1">DESCRIPTION:</label>
-                <textarea id="description1" class="item-description" required></textarea>
+                <textarea id="description1" name="descriptions[]" class="item-description" required></textarea>
                 <label for="unit1">UNIT:</label>
-                <input type="text" id="unit1" class="item-unit" required>
+                <input type="text" id="unit1" name="units[]" class="item-unit" required>
                 <label for="quantity1">QTY:</label>
-                <input type="text" id="quantity1" class="item-quantity" required>
+                <input type="text" id="quantity1" name="quantities[]" class="item-quantity" required>
             </div>
         </div>
         <button type="button" onclick="addItem()">Add Item</button><br><br>
