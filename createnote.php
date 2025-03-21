@@ -30,7 +30,6 @@
 </head>
 <body background="images/img5.jpg">
     <nav>
-    
         <a href="home.html">HOME</a>
         <a href="viewcard.html">JOB CARDS</a>
         <a href="viewnote.html">DELIVERY NOTES</a>
@@ -40,6 +39,35 @@
             <button type="submit">🔍</button>
         </div>
     </nav>
+
+    <?php
+    if(isset($_POST['create_note'])){
+        $deliveryNo = mysqli_real_escape_string($conn, $_POST['delivery_no']);
+        $deliverTo = mysqli_real_escape_string($conn, $_POST['deliver_to']);
+        $lpo = mysqli_real_escape_string($conn, $_POST['lpo_no']);
+        $dated = mysqli_real_escape_string($conn, $_POST['dated']);
+        $deliveryDate = mysqli_real_escape_string($conn, $_POST['delivery_date']);
+        $deliveredBy = mysqli_real_escape_string($conn, $_POST['delivered_by']);
+    }
+    //$items = [];
+        //foreach ($_POST['items'] as $item) {
+            //$items[] = [
+                //'item' => mysqli_real_escape_string($conn, $item['item']),
+                //'description' => mysqli_real_escape_string($conn, $item['description']),
+                //'unit' => mysqli_real_escape_string($conn, $item['unit']),
+                //'quantity' => mysqli_real_escape_string($conn, $item['quantity']),
+            //];
+        //}
+    $insert_note = "INSERT INTO note (delivery_no,deliver_to,lpo_no,dated,delivery_date,delivered_by) 
+    VALUES ('$deliveryNo','$deliverTo','$lpo','$dated','$deliveryDate','$deliveredBy')";
+
+    if($conn->query($insert_note) === True){
+        header('Location: viewnote.php');
+        exit();
+    } else{
+        echo "Error: " . $insert_note . "<br>" . $conn->error;
+    }
+    ?>
     <div class="cont">
         <img src="images/image.png" width="1255" height="150" class="d-inline-block align-top" alt="Logo">
     </div>
@@ -81,6 +109,8 @@
         <button type="button" onclick="generatePDF()">Download as PDF</button>
 
         <button type="button" onclick="resetDeliveryNo()">Reset Delivery Number</button>
+
+        <input type="submit" name="create_note" value="Save delivery note">
     </form>
     <script>
         let itemCount = 1;
@@ -192,7 +222,7 @@
             doc.setFont("helvetica", "bold");
             doc.text(`ITEM`, 20, yPos);
             doc.text(`DESCRIPTION`, 40, yPos);
-            doc.text(`UNIT`, 153, yPos);
+            doc.text(`UNITS`, 153, yPos);
             doc.text(`QTY`, 177, yPos);
             doc.setTextColor(0, 0, 0);
             doc.setFont("helvetica", "normal");
