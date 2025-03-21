@@ -186,17 +186,21 @@
             doc.setTextColor(0, 0, 0);
             doc.text(`${deliveredBy}`, 148, 85.5);
 
+            let yPos=99;
+            const itemsHeader = (doc, yPos) => { 
             doc.setTextColor(128, 128, 128);
             doc.setFont("helvetica", "bold");
-            doc.text(`ITEM`, 20, 99);
-            doc.text(`DESCRIPTION`, 40, 99);
-            doc.text(`UNIT`, 153, 99);
-            doc.text(`QTY`, 177, 99);
+            doc.text(`ITEM`, 20, yPos);
+            doc.text(`DESCRIPTION`, 40, yPos);
+            doc.text(`UNIT`, 153, yPos);
+            doc.text(`QTY`, 177, yPos);
             doc.setTextColor(0, 0, 0);
             doc.setFont("helvetica", "normal");
 
+            };
+            itemsHeader(doc, 99);
             // Adding items
-            let yPos = 100;
+            yPos += 1;
             const items = document.querySelectorAll('.ite');
             items.forEach((item, index) => {
                 const itemName = item.querySelector('.item-name').value;
@@ -204,21 +208,29 @@
                 const unit = item.querySelector('.item-unit').value;
                 const quantity = item.querySelector('.item-quantity').value;
 
+                const descriptionLines = doc.splitTextToSize(description, 100);
+                const lineHeight = 4.5;
+                const itemHeight = descriptionLines.length * lineHeight;
+
+                if (yPos + itemHeight> 270) {
+                    doc.addPage();
+                    yPos = 20;
+                    itemsHeader(doc, yPos);
+                    yPos += 5;
+                }
                 
-                doc.text(`${itemName}`, 20, yPos+6.5);
-                
-                
-                doc.text(` ${description}`, 40, yPos+6.5, { maxWidth: 100 });
-                
-                
-                doc.text(`${unit}`, 154, yPos+6.5);
-                
-                
-                doc.text(`${quantity}`, 177, yPos+6.5);
-                yPos += 12; // Adding some space between items
+                doc.text(`${itemName}`, 20, yPos+lineHeight);
+                doc.text(` ${description}`, 40, yPos+lineHeight, { maxWidth: 100 });
+                doc.text(`${unit}`, 154, yPos+lineHeight);
+                doc.text(`${quantity}`, 177, yPos+lineHeight);
+                yPos += itemHeight + 2; // Adding some space between items
             });
 
             yPos+=8;
+            if (yPos > 270) {
+                doc.addPage();
+                yPos = 20;
+            }
             doc.setFont("helvetica", "bold");
             doc.rect(20, yPos, 173, 30);
             doc.text(`Received in good condition by client representative:`, 22, yPos+6.5);

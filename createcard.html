@@ -242,24 +242,43 @@
             // Item Description
             doc.setFont("helvetica", "bold");
             doc.setTextColor(128, 128, 128);
-            doc.text("ITEM/MACHINE SERIAL NO", 22, 100, { maxWidth: 70 });
-            doc.text("JOB DESCRIPTION/INSTRUCTION", 100, 100);
+
+            const itemHeader = (doc,yPos) =>{
+            doc.text("ITEM/MACHINE SERIAL NO", 22, yPos, { maxWidth: 70 });
+            doc.text("JOB DESCRIPTION/INSTRUCTION", 85, yPos);
+            };
+
+            let yPos = 100;
+            itemHeader(doc, yPos);
+            yPos += 5;
     
             // Job Description Content
             doc.setFont("helvetica", "normal");
             doc.setTextColor(0, 0, 0);
-            let yPos = 100;
+            //let yPos = 100;
             const itemDescriptions = document.querySelectorAll('.item-description');
             itemDescriptions.forEach((item, index)=>{
+
+                if (yPos > 270) {
+                    doc.addPage();
+                    yPos = 20;
+                    itemHeader(doc, yPos);
+                    yPos += 5;
+                }
                 const machineSerialNumber = item.querySelector(`.machine-serial-number`).value;
                 const jobDescription = item.querySelector(`.job-description`).value;
-                doc.text(`${machineSerialNumber}`, 22, yPos + 6);
-                doc.text(`${jobDescription}`, 100, yPos + 6, { maxWidth: 110 });
-                yPos += 12;
+                const jobDescriptionLines = doc.splitTextToSize(jobDescription, 110);
+                const lineHeight = 4.5;
+                const itemHeight = jobDescriptionLines.length * lineHeight;
+                doc.text(`${machineSerialNumber}`, 22, yPos + lineHeight);
+                doc.text(`${jobDescription}`, 85, yPos + lineHeight, { maxWidth: 110 });
+                yPos += itemHeight + 1;
             })
             
             // Spare Parts Table
             yPos += 2;
+
+            const sparesHeader = (doc, yPos) =>{
             doc.setTextColor(128, 128, 128);
             doc.setFont("helvetica", "bold");
             doc.text("SPARES USED", 20, yPos + 7);
@@ -267,11 +286,20 @@
             doc.text("UNIT COST", 130, yPos + 7);
             doc.text("TOTAL", 165, yPos + 7);
             doc.setTextColor(0, 0, 0);
-    
-            yPos += 6.5;
             doc.setFont("helvetica", "normal");
+            };
+            
+            sparesHeader(doc, yPos);
+            yPos += 6.5;
             const spareParts = document.querySelectorAll('.spare-part');
             spareParts.forEach((part, index) => {
+
+                if (yPos > 270) {
+                    doc.addPage();
+                    yPos = 20;
+                    sparesHeader(doc, yPos);
+                    yPos += 5;
+                }
                 const sparePartName = part.querySelector('.spare-part-name').value;
                 const quantity = part.querySelector('.spare-part-quantity').value;
                 const unitCost = part.querySelector('.spare-part-unit-cost').value;
@@ -290,12 +318,29 @@
         yPos += 6.5;
     });
 
+    if (yPos > 270) {
+        doc.addPage();
+        yPos = 20;
+    }
     doc.setFont("helvetica", "bold");
     doc.text("Installation, testing, and commissioning done and system left in good working condition.", 20, yPos + 10, { maxWidth: 180 });
+    if (yPos > 270) {
+        doc.addPage();
+        yPos = 20;
+    }
     doc.setFont("helvetica", "normal");
     doc.text("Technician's Name and Signature: ..........................................................", 20, yPos + 17.5);
+
+    if (yPos > 270) {
+        doc.addPage();
+        yPos = 20;
+    }
     doc.setFont("helvetica", "bold");
     doc.text("Confirmed by client representative.", 20, yPos + 25, { maxWidth: 180 });
+    if (yPos > 270) {
+        doc.addPage();
+        yPos = 20;
+    }
     doc.setFont("helvetica", "normal");
     doc.text("Client's Name and Signature: ...............................................................", 20, yPos + 32.5);
 

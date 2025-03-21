@@ -71,7 +71,7 @@
     <form id="invoiceForm" style="background-color: white; width: 60%; padding: 20px;">
         <h2 style="text-align: center;">INVOICE</h2>
         <label for="invoiceNo">INVOICE NO:</label>
-        <input type="text" id="invoiceNo" required readonly><br><br>
+        <input type="text" id="invoiceNo" required><br><br>
 
         <label for="name">NAME:</label>
         <input type="text" id="name" required><br><br>
@@ -154,7 +154,7 @@
                     totalVAT += vat;
                 }
 
-                total += totalCost - vat;
+                total += totalCost;
             });
 
             const grandTotal = total + totalVAT;
@@ -294,7 +294,7 @@
                 const totalCost = parseFloat(item.querySelector('.item-unit').value) * parseFloat(quantity);
                 const isVatable = item.querySelector('.item-vatable').checked;
                 const vat = isVatable ? totalCost * 0.16 : 0;
-                const totalCostWithVAT = (totalCost - vat).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                const totalCostWithVAT = (totalCost).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
                 const descriptionLines = doc.splitTextToSize(description, 85);
                 const lineHeight = 4.5;
