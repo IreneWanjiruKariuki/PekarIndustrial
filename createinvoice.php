@@ -67,59 +67,93 @@
     </nav>
 
     <?php
-    require_once("db_connect.php");
+require_once("db_connect.php");
 
-    
-    if (isset($_POST['create_invoice'])) {
-        $invoice_no = $_POST['invoiceNo'];
-        $name = $_POST['name'];
-        $address = $_POST['address'];
-        $lpo = $_POST['lpo'];
-        $contact = $_POST['contact'];
-        $delivery_no = $_POST['deliveryNo'];
-        $tel = $_POST['tel'];
-        $dated = $_POST['dated'];
-        $items = $_POST['items'];
-        $descriptions = $_POST['descriptions'];
-        $quantities = $_POST['quantities'];
-        $unit_prices = $_POST['unit_prices'];
-        $vatables = isset($_POST['vatables']) ? $_POST['vatables'] : [];
+if (isset($_POST['create_invoice'])) {
+    ob_start();
 
-        $total = 0;
-        $totalVAT = 0;
+    $invoice_no = $_POST['invoiceNo'];
+    $name = $_POST['name'];
+    $address = $_POST['address'];
+    $lpo = $_POST['lpo'];
+    $contact = $_POST['contact'];
+    $delivery_no = $_POST['deliveryNo'];
+    $tel = $_POST['tel'];
+    $dated = $_POST['dated'];
+    $items = $_POST['items'];
+    $descriptions = $_POST['descriptions'];
+    $quantities = $_POST['quantities'];
+    $unit_prices = $_POST['unit_prices'];
+    $vatables = isset($_POST['vatables']) ? $_POST['vatables'] : [];
 
-        foreach ($items as $index => $item) {
-            $description = $descriptions[$index];
-            $quantity = $quantities[$index];
-            $unit_price = $unit_prices[$index];
-            $vatable = in_array($index, $vatables);
+    $total = 0;
+    $totalVAT = 0;
 
-            $total_cost = $quantity * $unit_price;
-            $vat = $vatable ? $total_cost * 0.16 : 0;
+    // Step 1: Ensure the invoice exists before adding items
+    $stmt = $conn->prepare("INSERT INTO invoice (invoice_no, name, address, lpo_no, contact, delivery_no, tel, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    if (!$stmt) {
+        echo "Error preparing statement for invoice: " . $conn->error;
+        exit();
+    }
+    $stmt->bind_param("ssssssss", $invoice_no, $name, $address, $lpo, $contact, $delivery_no, $tel, $dated);
+    if (!$stmt->execute()) {
+        echo "Error executing invoice statement: " . $stmt->error;
+        exit();
+    }
+    $stmt->close();
 
-            $total += $total_cost;
-            $totalVAT += $vat;
-
-            $insert_item = "INSERT INTO invoice (name, address, lpo_no, contact, delivery_no, tel, date, invoice_no, item_code, description, quantity, unit_price, vat) VALUES ('$name','$address','$lpo','$contact','$delivery_no','$tel','$dated','$invoice_no', '$item', '$description', '$quantity', '$unit_price', '$vat')";
-            if (!$conn->query($insert_item)) {
-                echo "Error: " . $insert_item . "<br>" . $conn->error;
-            }
-        }
-        $grand_total = $total + $totalVAT;
-
-        $update_totals = "UPDATE invoice SET total = '$total', vat = '$totalVAT', grand_total = '$grand_total' WHERE invoice_no = '$invoice_no'";
-        if (!$conn->query($update_totals)) {
-            echo "Error: " . $update_totals . "<br>" . $conn->error;
-        }
-
-        echo "Invoice saved successfully!";
-        header("Location: viewinvoice.php");
+    // Step 2: Insert into invoice_item
+    $stmt = $conn->prepare("INSERT INTO invoice_item (invoice_no, item_code, description, quantity, unit_price, total_cost) VALUES (?, ?, ?, ?, ?, ?)");
+    if (!$stmt) {
+        echo "Error preparing statement for invoice items: " . $conn->error;
         exit();
     }
 
-    $conn->close();
-    ?>
+    foreach ($items as $index => $item) {
+        $description = $descriptions[$index];
+        $quantity = $quantities[$index];
+        $unit_price = $unit_prices[$index];
+        $vatable = in_array($index, array_keys($vatables));
 
+        $total_cost = $quantity * $unit_price;
+        $vat = $vatable ? $total_cost * 0.16 : 0;
+
+        $total += $total_cost;
+        $totalVAT += $vat;
+
+        $stmt->bind_param("sssidd", $invoice_no, $item, $description, $quantity, $unit_price, $total_cost);
+
+        if (!$stmt->execute()) {
+            echo "Error executing statement for items: " . $stmt->error;
+            exit();
+        }
+    }
+    $stmt->close();
+
+    // Step 3: Update total, VAT, and grand total in the invoice table
+    $grand_total = $total + $totalVAT;
+    $stmt = $conn->prepare("UPDATE invoice SET total = ?, vat = ?, grand_total = ? WHERE invoice_no = ?");
+    if (!$stmt) {
+        echo "Error preparing statement for invoice update: " . $conn->error;
+        exit();
+    }
+
+    $stmt->bind_param("ddds", $total, $totalVAT, $grand_total, $invoice_no);
+
+    if (!$stmt->execute()) {
+        echo "Error executing update statement: " . $stmt->error;
+    }
+    $stmt->close();
+
+    echo "Invoice saved successfully!";
+    header("Location: viewinvoice.php");
+    ob_end_flush();
+    exit();
+}
+
+$conn->close();
+
+?>
     <div class="cont">
         <img src="images/image.png" width="1255" height="150" class="d-inline-block align-top" alt="Logo">
     </div>

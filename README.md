@@ -1,56 +1,78 @@
-<?php
-    if(isset($_POST['create_note'])){
-        $deliveryNo = mysqli_real_escape_string($conn, $_POST['delivery_no']);
-        $deliverTo = mysqli_real_escape_string($conn, $_POST['deliver_to']);
-        $lpo = mysqli_real_escape_string($conn, $_POST['lpo_no']);
-        $dated = mysqli_real_escape_string($conn, $_POST['dated']);
-        $deliveryDate = mysqli_real_escape_string($conn, $_POST['delivery_date']);
-        $deliveredBy = mysqli_real_escape_string($conn, $_POST['delivered_by']);
-    }
-    //$items = [];
-        //foreach ($_POST['items'] as $item) {
-            //$items[] = [
-                //'item' => mysqli_real_escape_string($conn, $item['item']),
-                //'description' => mysqli_real_escape_string($conn, $item['description']),
-                //'unit' => mysqli_real_escape_string($conn, $item['unit']),
-                //'quantity' => mysqli_real_escape_string($conn, $item['quantity']),
-            //];
-        //}
-    $insert_note = "INSERT INTO note (delivery_no,deliver_to,lpo_no,dated,delivery_date,delivered_by) 
-    VALUES ('$deliveryNo','$deliverTo','$lpo','$dated','$deliveryDate','$deliveredBy')";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Invoices</title>
+    <link rel="stylesheet" href="css.css/style.css">
+</head>
+<body>
+    <h1>Invoices</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Invoice No</th>
+                <th>Address</th>
+                <th>LPO No</th>
+                <th>Contact</th>
+                <th>Delivery No</th>
+                <th>Tel</th>
+                <th>Date</th>
+                <th>Item Code</th>
+                <th>Description</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Total Cost</th>
+                <th>Total</th>
+                <th>VAT</th>
+                <th>Grand Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+            // Database connection
+            $conn = new mysqli('localhost', 'root', '', 'pekar');
 
-    if($conn->query($insert_note) === True){
-        header('Location: viewnote.php');
-        exit();
-    } else{
-        echo "Error: " . $insert_note . "<br>" . $conn->error;
-    }
-    ?>
+            if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+            }
 
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $deliveryNo = $_POST['deliveryNo'];
-    $deliverTo = $_POST['deliverTo'];
-    $lpo = $_POST['lpo'];
-    $dated = $_POST['dated'];
-    $deliveryDate = $_POST['deliveryDate'];
-    $deliveredBy = $_POST['deliveredBy'];
-    $item = $_POST['item'];
-    $description = $_POST['description'];
-    $unit = $_POST['unit'];
-    $quantity = $_POST['quantity'];
+            // Fetch invoices from the database
+            $sql = "SELECT name, invoice_no, address, lpo_no, contact, delivery_no, tel, date,  total, vat, grand_total FROM invoice";
+            $sql2 = "SELECT item_code, description, quantity, unit_price, total_cost FROM invoice_item";
+            $result = $conn->query($sql);
+            $result2 = $conn->query($sql2);
 
-    // Insert data into the database
-    $insertnote = $conn->prepare("INSERT INTO note (delivery_no, deliver_to, lpo_no, dated, delivery_date, delivered_by, item, description, unit, quantity) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            if ($result->num_rows > 0) {
+                // Output data of each row
+                while($row = $result->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td>" . $row["name"] . "</td>";
+                    echo "<td>" . $row["invoice_no"] . "</td>";
+                    echo "<td>" . $row["address"] . "</td>";
+                    echo "<td>" . $row["lpo_no"] . "</td>";
+                    echo "<td>" . $row["contact"] . "</td>";
+                    echo "<td>" . $row["delivery_no"] . "</td>";
+                    echo "<td>" . $row["tel"] . "</td>";
+                    echo "<td>" . $row["date"] . "</td>";
+                    echo "<td>" . $row["item_code"] . "</td>";
+                    echo "<td>" . $row["description"] . "</td>";
+                    echo "<td>" . $row["quantity"] . "</td>";
+                    echo "<td>" . $row["unit_price"] . "</td>";
+                    echo "<td>" . $row["total_cost"] . "</td>";
+                    echo "<td>" . $row["total"] . "</td>";
+                    echo "<td>" . $row["vat"] . "</td>";
+                    echo "<td>" . $row["grand_total"] . "</td>";
+                    echo "</tr>";
+                }
+            } else {
+                echo "<tr><td colspan='16'>No invoices found</td></tr>";
+            }
 
-    for ($i = 0; $i < count($item); $i++) {
-        $insertnote->bind_param("ssssssssss", $deliveryNo, $deliverTo, $lpo, $dated, $deliveryDate, $deliveredBy, $item[$i], $description[$i], $unit[$i], $quantity[$i]);
-        $insertnote->execute();
-    }
-
-    $insertnote->close();
-    $conn->close();
-
-    // Redirect to the viewnote.html page
-    header("Location: viewnote.html");
-    exit();
-}
+            $conn->close();
+            ?>
+        </tbody>
+    </table>
+</body>
+</html>
