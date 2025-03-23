@@ -32,26 +32,40 @@
                 die("Connection failed: " . $conn->connect_error);
             }
 
-            // Fetch delivery notes from the database
-            $sql = "SELECT delivery_no, deliver_to, lpo_no, dated, delivery_date, delivered_by, item, description, unit, quantity FROM note";
+            // Fetch delivery notes and their items from the database
+            $sql = "SELECT n.delivery_no, n.deliver_to, n.lpo_no, n.dated, n.delivery_date, n.delivered_by, 
+                           ni.item, ni.description, ni.unit, ni.quantity
+                    FROM note n
+                    LEFT JOIN note_item ni ON n.delivery_no = ni.delivery_no
+                    ORDER BY n.delivery_no, ni.item";
             $result = $conn->query($sql);
 
             if ($result->num_rows > 0) {
-                // Output data of each row
+                $current_delivery_no = null;
                 while($row = $result->fetch_assoc()) {
-                    echo "<tr>";
-                    echo "<td>" . $row["delivery_no"] . "</td>";
-                    echo "<td>" . $row["deliver_to"] . "</td>";
-                    echo "<td>" . $row["lpo_no"] . "</td>";
-                    echo "<td>" . $row["dated"] . "</td>";
-                    echo "<td>" . $row["delivery_date"] . "</td>";
-                    echo "<td>" . $row["delivered_by"] . "</td>";
+                    if ($current_delivery_no !== $row["delivery_no"]) {
+                        if ($current_delivery_no !== null) {
+                            echo "</tr>";
+                        }
+                        $current_delivery_no = $row["delivery_no"];
+                        echo "<tr>";
+                        echo "<td>" . $row["delivery_no"] . "</td>";
+                        echo "<td>" . $row["deliver_to"] . "</td>";
+                        echo "<td>" . $row["lpo_no"] . "</td>";
+                        echo "<td>" . $row["dated"] . "</td>";
+                        echo "<td>" . $row["delivery_date"] . "</td>";
+                        echo "<td>" . $row["delivered_by"] . "</td>";
+                    } else {
+                        echo "<tr><td colspan='6'></td>";
+                    }
                     echo "<td>" . $row["item"] . "</td>";
                     echo "<td>" . $row["description"] . "</td>";
                     echo "<td>" . $row["unit"] . "</td>";
                     echo "<td>" . $row["quantity"] . "</td>";
                     echo "</tr>";
                 }
+                // Close the last delivery note row
+                echo "</tr>";
             } else {
                 echo "<tr><td colspan='10'>No delivery notes found</td></tr>";
             }

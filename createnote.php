@@ -42,44 +42,64 @@
     </nav>
 
     <?php
-    require_once ("db_connect.php");
+require_once("db_connect.php");
 
-    // Check if the form is submitted
-    if ( isset($_POST['create_note'])) {
-        $deliver_to =mysqli_real_escape_string($conn, $_POST['deliverTo']);
-        $delivery_no =mysqli_real_escape_string($conn, $_POST['deliveryNo']);
-        $lpo_no =mysqli_real_escape_string($conn, $_POST['lpo']);
-        $dated = mysqli_real_escape_string($conn,$_POST['dated']);
-        $delivery_date = mysqli_real_escape_string($conn,$_POST['deliveryDate']);
-        $delivered_by =mysqli_real_escape_string($conn, $_POST['deliveredBy']);
-        $items = $_POST['items'];
-        $descriptions = $_POST['descriptions'];
-        $units = $_POST['units'];
-        $quantities = $_POST['quantities'];
+if (isset($_POST['create_note'])) {
+    ob_start();
 
-        // Insert each item in the note table
-        for ($i = 0; $i < count($items); $i++) {
-            $item = mysqli_real_escape_string($conn, $items[$i]);
-            $description = mysqli_real_escape_string($conn, $descriptions[$i]);
-            $unit = mysqli_real_escape_string($conn, $units[$i]);
-            $quantity = mysqli_real_escape_string($conn, $quantities[$i]);
+    $deliver_to = mysqli_real_escape_string($conn, $_POST['deliverTo']);
+    $delivery_no = mysqli_real_escape_string($conn, $_POST['deliveryNo']);
+    $lpo_no = mysqli_real_escape_string($conn, $_POST['lpo']);
+    $dated = mysqli_real_escape_string($conn, $_POST['dated']);
+    $delivery_date = mysqli_real_escape_string($conn, $_POST['deliveryDate']);
+    $delivered_by = mysqli_real_escape_string($conn, $_POST['deliveredBy']);
+    $items = $_POST['items'];
+    $descriptions = $_POST['descriptions'];
+    $units = $_POST['units'];
+    $quantities = $_POST['quantities'];
 
-            $insert_note = "INSERT INTO note (deliver_to, delivery_no, lpo_no, dated, delivery_date, delivered_by, item, description, unit, quantity)
-                            VALUES ('$deliver_to', '$delivery_no', '$lpo_no', '$dated', '$delivery_date', '$delivered_by', '$item', '$description', '$unit', '$quantity')";
-
-            if (!$conn->query($insert_note)) {
-                echo "Error: " . $insert_note . "<br>" . $conn->error;
-            
-            }
-        }
-
-        echo "Delivery Note saved successfully!";
-        header("Location: viewnote.php");
+    // Step 1: Insert the main delivery note details into the note table
+    $stmt = $conn->prepare("INSERT INTO note (deliver_to, delivery_no, lpo_no, dated, delivery_date, delivered_by) VALUES (?, ?, ?, ?, ?, ?)");
+    if (!$stmt) {
+        echo "Error preparing statement for note: " . $conn->error;
         exit();
-    
     }
-    $conn->close();
-    ?>
+    $stmt->bind_param("ssssss", $deliver_to, $delivery_no, $lpo_no, $dated, $delivery_date, $delivered_by);
+    if (!$stmt->execute()) {
+        echo "Error executing note statement: " . $stmt->error;
+        exit();
+    }
+    $stmt->close();
+
+    // Step 2: Insert each item associated with the delivery note into the note_item table
+    $stmt = $conn->prepare("INSERT INTO note_item (delivery_no, item, description, unit, quantity) VALUES (?, ?, ?, ?, ?)");
+    if (!$stmt) {
+        echo "Error preparing statement for note items: " . $conn->error;
+        exit();
+    }
+
+    for ($i = 0; $i < count($items); $i++) {
+        $item = mysqli_real_escape_string($conn, $items[$i]);
+        $description = mysqli_real_escape_string($conn, $descriptions[$i]);
+        $unit = mysqli_real_escape_string($conn, $units[$i]);
+        $quantity = mysqli_real_escape_string($conn, $quantities[$i]);
+
+        $stmt->bind_param("ssssd", $delivery_no, $item, $description, $unit, $quantity);
+        if (!$stmt->execute()) {
+            echo "Error executing statement for items: " . $stmt->error;
+            exit();
+        }
+    }
+    $stmt->close();
+
+    echo "Delivery Note saved successfully!";
+    header("Location: viewnote.php");
+    ob_end_flush();
+    exit();
+}
+
+$conn->close();
+?>
 
     <div class="cont">
         <img src="images/image.png" width="1255" height="150" class="d-inline-block align-top" alt="Logo">

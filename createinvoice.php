@@ -72,14 +72,14 @@ require_once("db_connect.php");
 if (isset($_POST['create_invoice'])) {
     ob_start();
 
-    $invoice_no = $_POST['invoiceNo'];
-    $name = $_POST['name'];
-    $address = $_POST['address'];
-    $lpo = $_POST['lpo'];
-    $contact = $_POST['contact'];
-    $delivery_no = $_POST['deliveryNo'];
-    $tel = $_POST['tel'];
-    $dated = $_POST['dated'];
+    $invoice_no = mysqli_real_escape_string($conn, $_POST['invoiceNo']);
+    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    $address = mysqli_real_escape_string($conn, $_POST['address']);
+    $lpo = mysqli_real_escape_string($conn, $_POST['lpo']);
+    $contact = mysqli_real_escape_string($conn, $_POST['contact']);
+    $delivery_no = mysqli_real_escape_string($conn, $_POST['deliveryNo']);
+    $tel = mysqli_real_escape_string($conn, $_POST['tel']);
+    $dated = mysqli_real_escape_string($conn, $_POST['dated']);
     $items = $_POST['items'];
     $descriptions = $_POST['descriptions'];
     $quantities = $_POST['quantities'];
@@ -110,9 +110,10 @@ if (isset($_POST['create_invoice'])) {
     }
 
     foreach ($items as $index => $item) {
-        $description = $descriptions[$index];
-        $quantity = $quantities[$index];
-        $unit_price = $unit_prices[$index];
+        $item = mysqli_real_escape_string($conn, $item);
+        $description = mysqli_real_escape_string($conn, $descriptions[$index]);
+        $quantity = mysqli_real_escape_string($conn, $quantities[$index]);
+        $unit_price = mysqli_real_escape_string($conn, $unit_prices[$index]);
         $vatable = in_array($index, array_keys($vatables));
 
         $total_cost = $quantity * $unit_price;
@@ -152,7 +153,6 @@ if (isset($_POST['create_invoice'])) {
 }
 
 $conn->close();
-
 ?>
     <div class="cont">
         <img src="images/image.png" width="1255" height="150" class="d-inline-block align-top" alt="Logo">
