@@ -32,9 +32,9 @@
 <body background="images/img5.jpg">
     <nav>
         <a href="home.html">HOME</a>
-        <a href="viewcard.html">JOB CARDS</a>
-        <a href="viewnote.html">DELIVERY NOTES</a>
-        <a href="viewinvoice.html">INVOICES</a>
+        <a href="viewcard.php">JOB CARDS</a>
+        <a href="viewnote.php">DELIVERY NOTES</a>
+        <a href="viewinvoice.php">INVOICES</a>
         <div class="search-container">
             <input type="text" placeholder="Search..." id="search">
             <button type="submit">🔍</button>
@@ -80,7 +80,7 @@
     }
     $conn->close();
     ?>
-    
+
     <div class="cont">
         <img src="images/image.png" width="1255" height="150" class="d-inline-block align-top" alt="Logo">
     </div>
@@ -135,13 +135,13 @@
             newItem.classList.add('ite');
             newItem.innerHTML = `
             <label for="item${itemCount}">ITEM:</label>
-            <input type="text" id="item${itemCount}" class="item-name" required>
+            <input type="text" id="item${itemCount}" name="items[]" class="item-name" required>
             <label for="description${itemCount}">DESCRIPTION:</label>
-            <textarea id="description${itemCount}" class="item-description" required></textarea>
+            <textarea id="description${itemCount}" name="descriptions[]" class="item-description" required></textarea>
             <label for="unit${itemCount}">UNIT:</label>
-            <input type="text" id="unit${itemCount}" class="item-unit" required>
+            <input type="text" id="unit${itemCount}" name="units[]" class="item-unit" required>
             <label for="quantity${itemCount}">QTY:</label>
-            <input type="text" id="quantity${itemCount}" class="item-quantity" required>
+            <input type="text" id="quantity${itemCount}" name="quantities[]" class="item-quantity" required>
             `;
             container.appendChild(newItem);
         }

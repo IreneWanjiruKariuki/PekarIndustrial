@@ -57,56 +57,111 @@
 <body background="images/img5.jpg">
     <nav>
         <a href="home.html">HOME</a>
-        <a href="viewcard.html">JOB CARDS</a>
-        <a href="viewnote.html">DELIVERY NOTES</a>
-        <a href="viewinvoice.html">INVOICES</a>
+        <a href="viewcard.php">JOB CARDS</a>
+        <a href="viewnote.php">DELIVERY NOTES</a>
+        <a href="viewinvoice.php">INVOICES</a>
         <div class="search-container">
             <input type="text" placeholder="Search..." id="search">
             <button type="submit">🔍</button>
         </div>
     </nav>
+
+    <?php
+    require_once("db_connect.php");
+
+    
+    if (isset($_POST['create_invoice'])) {
+        $invoice_no = $_POST['invoiceNo'];
+        $name = $_POST['name'];
+        $address = $_POST['address'];
+        $lpo = $_POST['lpo'];
+        $contact = $_POST['contact'];
+        $delivery_no = $_POST['deliveryNo'];
+        $tel = $_POST['tel'];
+        $dated = $_POST['dated'];
+        $items = $_POST['items'];
+        $descriptions = $_POST['descriptions'];
+        $quantities = $_POST['quantities'];
+        $unit_prices = $_POST['unit_prices'];
+        $vatables = isset($_POST['vatables']) ? $_POST['vatables'] : [];
+
+        $total = 0;
+        $totalVAT = 0;
+
+        foreach ($items as $index => $item) {
+            $description = $descriptions[$index];
+            $quantity = $quantities[$index];
+            $unit_price = $unit_prices[$index];
+            $vatable = in_array($index, $vatables);
+
+            $total_cost = $quantity * $unit_price;
+            $vat = $vatable ? $total_cost * 0.16 : 0;
+
+            $total += $total_cost;
+            $totalVAT += $vat;
+
+            $insert_item = "INSERT INTO invoice (name, address, lpo_no, contact, delivery_no, tel, date, invoice_no, item_code, description, quantity, unit_price, vat) VALUES ('$name','$address','$lpo','$contact','$delivery_no','$tel','$dated','$invoice_no', '$item', '$description', '$quantity', '$unit_price', '$vat')";
+            if (!$conn->query($insert_item)) {
+                echo "Error: " . $insert_item . "<br>" . $conn->error;
+            }
+        }
+        $grand_total = $total + $totalVAT;
+
+        $update_totals = "UPDATE invoice SET total = '$total', vat = '$totalVAT', grand_total = '$grand_total' WHERE invoice_no = '$invoice_no'";
+        if (!$conn->query($update_totals)) {
+            echo "Error: " . $update_totals . "<br>" . $conn->error;
+        }
+
+        echo "Invoice saved successfully!";
+        header("Location: viewinvoice.php");
+        exit();
+    }
+
+    $conn->close();
+    ?>
+
     <div class="cont">
         <img src="images/image.png" width="1255" height="150" class="d-inline-block align-top" alt="Logo">
     </div>
-    <form id="invoiceForm" style="background-color: white; width: 60%; padding: 20px;">
+    <form id="invoiceForm" method="POST" action="<?php print htmlspecialchars($_SERVER["PHP_SELF"]); ?>" style="background-color: white; width: 60%; padding: 20px;">
         <h2 style="text-align: center;">INVOICE</h2>
         <label for="invoiceNo">INVOICE NO:</label>
-        <input type="text" id="invoiceNo" required><br><br>
+        <input type="text" id="invoiceNo" name="invoiceNo" required><br><br>
 
         <label for="name">NAME:</label>
-        <input type="text" id="name" required><br><br>
+        <input type="text" id="name" name="name"required><br><br>
 
         <label for="address">ADDRESS:</label>
-        <input type="text" id="address" required><br><br>
+        <input type="text" id="address" name="address"required><br><br>
 
         <label for="lpo">LPO NO:</label>
-        <input type="text" id="lpo" required><br><br>
+        <input type="text" id="lpo" name="lpo" required><br><br>
 
         <label for="contact">CONTACT:</label>
-        <input type="text" id="contact" required><br><br>
+        <input type="text" id="contact" name="contact" required><br><br>
 
         <label for="deliveryNo">DELIVERY NO/JOB CARD NO:</label>
-        <input type="text" id="deliveryNo" required><br><br>
+        <input type="text" id="deliveryNo" name="deliveryNo" required><br><br>
 
         <label for="tel">TEL:</label>
-        <input type="text" id="tel" required><br><br>
+        <input type="text" id="tel" name="tel" required><br><br>
 
         <label for="dated">DATE:</label>
-        <input type="date" id="dated" required><br><br>
+        <input type="date" id="dated" name="dated" required><br><br>
 
         <h3>ITEMS</h3>
         <div id="itemsContainer">
             <div class="ite">
                 <label for="item1">ITEM CODE:</label>
-                <input type="text" id="item1" class="item-code" required>
+                <input type="text" id="item1" name="items[]" class="item-code" required>
                 <label for="description1">DESCRIPTION:</label>
-                <textarea id="description1" class="item-description" required></textarea>
+                <textarea id="description1" name="descriptions[]" class="item-description" required></textarea>
                 <label for="quantity1">QTY:</label>
-                <input type="text" id="quantity1" class="item-quantity" required>
+                <input type="text" id="quantity1" name="quantities[]" class="item-quantity" required>
                 <label for="unit1">UNIT PRICE:</label>
-                <input type="text" id="unit1" class="item-unit" required>
+                <input type="text" id="unit1" name="unit_prices[]"class="item-unit" required>
                 <label for="vatable1" class="inline-label">VATABLE:</label>
-                <input type="checkbox" id="vatable1" class="item-vatable large-checkbox">
+                <input type="checkbox" id="vatable1" name="vatables[]" class="item-vatable large-checkbox">
             </div>
         </div>
         <button type="button" onclick="addItem()">Add Item</button><br><br>
@@ -114,6 +169,8 @@
         <button type="button" onclick="generatePDF()">Download as PDF</button>
 
         <button type="button" onclick="resetInvoiceNo()">Reset Invoice Number</button>
+
+        <input type="submit" name="create_invoice" value="Save invoice">
     </form>
     <script>
         let itemCount = 1;
@@ -125,15 +182,15 @@
             newItem.classList.add('ite');
             newItem.innerHTML = `
             <label for="item${itemCount}">ITEM CODE:</label>
-            <input type="text" id="item${itemCount}" class="item-code" required>
+            <input type="text" id="item${itemCount}" name="items[]" class="item-code" required>
             <label for="description${itemCount}">DESCRIPTION:</label>
-            <textarea id="description${itemCount}" class="item-description" required></textarea>
+            <textarea id="description${itemCount}" name="descriptions[]" class="item-description" required></textarea>
             <label for="quantity${itemCount}">QTY:</label>
-            <input type="text" id="quantity${itemCount}" class="item-quantity" required>
+            <input type="text" id="quantity${itemCount}" name="quantities[]" class="item-quantity" required>
             <label for="unit${itemCount}">UNIT PRICE:</label>
-            <input type="text" id="unit${itemCount}" class="item-unit" required>
+            <input type="text" id="unit${itemCount}" name="unit_prices[]" class="item-unit" required>
             <label for="vatable${itemCount}" class="inline-label">VATABLE:</label>
-            <input type="checkbox" id="vatable${itemCount}" class="item-vatable large-checkbox">
+            <input type="checkbox" id="vatable${itemCount}" name="vatables[]" class="item-vatable large-checkbox">
             `;
             container.appendChild(newItem);
         }
