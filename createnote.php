@@ -32,9 +32,9 @@
 <body background="images/img5.jpg">
     <nav>
         <a href="home.html">HOME</a>
-        <a href="viewcard.php">JOB CARDS</a>
-        <a href="viewnote.php">DELIVERY NOTES</a>
-        <a href="viewinvoice.php">INVOICES</a>
+        <a href="viewcard.php">VIEW JOB CARDS</a>
+        <a href="viewnote.php">VIEW DELIVERY NOTES</a>
+        <a href="viewinvoice.php">VIEW INVOICES</a>
         <div class="search-container">
             <input type="text" placeholder="Search..." id="search">
             <button type="submit">🔍</button>

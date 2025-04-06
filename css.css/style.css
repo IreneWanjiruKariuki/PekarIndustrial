@@ -28,6 +28,7 @@ nav a:hover {
 }
 .cont{
     text-align: center;
+    margin: 0%;
 }
 .search-container {
     display: flex;
@@ -177,4 +178,29 @@ form button {
 
 form button:hover {
     background-color: #555;
+}
+table{
+    /*border: 1px solid #373737;*/
+    border-collapse: collapse;
+    width: 80%;
+}
+td{
+    border: 1px solid #373737;
+    padding: 5px;
+    text-align: left;
+}
+th{
+    background-color:#ccc;
+    color:#373737;
+    border: 1px solid #373737;
+    padding: 5px;
+    text-align: left;
+}
+tr:nth-child(odd){
+    background-color:rgb(232, 232, 226);
+}
+tr:hover{
+    color:#373737;
+    background-color: azure;
+    text-decoration: none;
 }

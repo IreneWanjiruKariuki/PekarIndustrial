@@ -32,52 +32,133 @@
     <nav>
     
         <a href="home.html">HOME</a>
-        <a href="viewcard.html">JOB CARDS</a>
-        <a href="viewnote.html">DELIVERY NOTES</a>
-        <a href="viewinvoice.html">INVOICES</a>
-        <div class="search-container">
-            <input type="text" placeholder="Search..." id="search">
-            <button type="submit">🔍</button>
-        </div>
+        <a href="viewcard.php">VIEW JOB CARDS</a>
+        <a href="viewnote.php">VIEW DELIVERY NOTES</a>
+        <a href="viewinvoice.php">VIEW INVOICES</a>
+        <a href="javascript:void(0);" class="icon" onclick="toggleNavbar()">
+            &#9776;
+        </a>
     </nav>
+
+    <?php
+require_once("db_connect.php");
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    ob_start();
+
+    $jobNumber = mysqli_real_escape_string($conn, $_POST['jobNumber']);
+    $date = mysqli_real_escape_string($conn, $_POST['date']);
+    $customerName = mysqli_real_escape_string($conn, $_POST['customerName']);
+    $technicianName = mysqli_real_escape_string($conn, $_POST['technicianName']);
+    $lpo = mysqli_real_escape_string($conn, $_POST['lpo']);
+    $dateStarted = mysqli_real_escape_string($conn, $_POST['dateStarted']);
+    $dateFinished = mysqli_real_escape_string($conn, $_POST['dateFinished']);
+    $machineSerialNumbers = $_POST['machineSerialNumbers'];
+    $jobDescriptions = $_POST['jobDescriptions'];
+    $spareParts = $_POST['spareParts'];
+    $quantities = $_POST['quantities'];
+    $unitCosts = $_POST['unitCosts'];
+
+    // Step 1: Insert the main job card details into the card table
+    $stmt = $conn->prepare("INSERT INTO card (jobNo, date, customer_name, technician_name, date_started, date_finished) VALUES (?, ?, ?, ?, ?, ?)");
+    if (!$stmt) {
+        echo "Error preparing statement for card: " . $conn->error;
+        exit();
+    }
+    $stmt->bind_param("ssssss", $jobNumber, $date, $customerName, $technicianName, $dateStarted, $dateFinished);
+    if (!$stmt->execute()) {
+        echo "Error executing card statement: " . $stmt->error;
+        exit();
+    }
+    $stmt->close();
+
+    // Step 2: Insert each item associated with the job card into the card_item table
+    $stmt = $conn->prepare("INSERT INTO card_item (jobNo, machine_serial_number, job_description) VALUES (?, ?, ?)");
+    if (!$stmt) {
+        echo "Error preparing statement for card items: " . $conn->error;
+        exit();
+    }
+
+    for ($i = 0; $i < count($machineSerialNumbers); $i++) {
+        $machineSerialNumber = mysqli_real_escape_string($conn, $machineSerialNumbers[$i]);
+        $jobDescription = mysqli_real_escape_string($conn, $jobDescriptions[$i]);
+
+        $stmt->bind_param("sss", $jobNumber, $machineSerialNumber, $jobDescription);
+        if (!$stmt->execute()) {
+            echo "Error executing statement for card items: " . $stmt->error;
+            exit();
+        }
+    }
+    $stmt->close();
+
+    // Step 3: Insert each spare part associated with the job card into the card_spares table
+    $stmt = $conn->prepare("INSERT INTO card_spare (jobNo, spare_part, quantity, unit_cost, total) VALUES (?, ?, ?, ?, ?)");
+    if (!$stmt) {
+        echo "Error preparing statement for card spares: " . $conn->error;
+        exit();
+    }
+
+    for ($i = 0; $i < count($spareParts); $i++) {
+        $sparePart = mysqli_real_escape_string($conn, $spareParts[$i]);
+        $quantity = mysqli_real_escape_string($conn, $quantities[$i]);
+        $unitCost = mysqli_real_escape_string($conn, $unitCosts[$i]);
+        $total = $quantity * $unitCost;
+
+        $stmt->bind_param("ssidd", $jobNumber, $sparePart, $quantity, $unitCost, $total);
+        if (!$stmt->execute()) {
+            echo "Error executing statement for card spares: " . $stmt->error;
+            exit();
+        }
+    }
+    $stmt->close();
+
+    echo "Job Card saved successfully!";
+    header("Location: viewcard.php");
+    ob_end_flush();
+    exit();
+}
+
+$conn->close();
+?>
 
     <div class="cont">
         <img src="images/image.png" width="1255" height="150" class="d-inline-block align-top" alt="Logo">
     </div>
 
     
-    <form id="jobCardForm" style="background-color: white; width: 60%; padding: 20px;">
+    <form id="jobCardForm" method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" style="background-color: white; width: 60%; padding: 20px;">
         
         <h2 style="text-align: center;">JOB CARD/EQUIPMENTMENT HANDOVER</h2>
         
         <label for="jobNumber">JOB NUMBER:</label>
-        <input type="text" id="jobNumber" required><br><br>
+        <input type="text" id="jobNumber" name="jobNumber" required><br><br>
 
         <label for="date">DATE:</label>
-        <input type="date" id="date" required><br><br>
+        <input type="date" id="date" name="date" required><br><br>
 
         <label for="customerName">CUSTOMER:</label>
-        <input type="text" id="customerName" required><br><br>
+        <input type="text" id="customerName" name="customerName" required><br><br>
 
         <label for="technicianName">TECHNICIAN NAME:</label>
-        <input type="text" id="technicianName" required><br><br>
+        <input type="text" id="technicianName" name="technicianName" required><br><br>
 
         <label for="lpo">LPO/REF:</label>
-        <input type="text" id="lpo" required><br><br>
+        <input type="text" id="lpo" name="lpo" required><br><br>
 
         <label for="dateStarted">TIME JOB STARTED:</label>
-        <input type="date" id="dateStarted" required><br><br>
+        <input type="date" id="dateStarted" name="dateStarted" required><br><br>
 
         <label for="dateFinished">TIME JOB FINISHED:</label>
-        <input type="date" id="dateFinished" required><br><br>
+        <input type="date" id="dateFinished" name="dateFinished" required><br><br>
         
         <h3>Item Description</h3>
         <div id="itemDescriptionContainer">
             <div class="item-description">
                 <label for="machineSerialNumber1">ITEM/MACHINE SERIAL NUMBER:</label>
-                <input type="text" id="machineSerialNumber1" class= "machine-serial-number" required>
+                <input type="text" id="machineSerialNumber1" name="machineSerialNumbers[]" class= "machine-serial-number" required>
                 <label for="jobDescription1">JOB DESCRIPTION/INSTRUCTION:</label>
-                <textarea id="jobDescription1" class="job-description" required></textarea>
+                <textarea id="jobDescription1" name="jobDescriptions[]" class="job-description" required></textarea>
             </div>
         </div>
         <button type="button" onclick="addItem()">Add item/machine</button><br><br>
@@ -85,11 +166,11 @@
         <div id="sparePartsContainer">
             <div class="spare-part">
                 <label for="sparePart1">SPARES USED:</label>
-                <input type="text" id="sparePart1" class="spare-part-name" required>
+                <input type="text" id="sparePart1" name="spareParts[]" class="spare-part-name" required>
                 <label for="quantity1">QUANTITY:</label>
-                <input type="text" id="quantity1" class="spare-part-quantity" required>
+                <input type="text" id="quantity1" name="quantities[]" class="spare-part-quantity" required>
                 <label for="unitCost1">UNIT COST:</label>
-                <input type="text" id="unitCost1" class="spare-part-unit-cost" required>
+                <input type="text" id="unitCost1" name="unitCosts[]" class="spare-part-unit-cost" required>
                 
             </div>
         </div>
@@ -98,6 +179,8 @@
         <button type="button" onclick="generatePDF()">Download as PDF</button>
 
         <button type="button" onclick="resetJobNumber()">Reset Job Number</button>
+
+        <input type="submit" value="Save Job Card">
     </form>
 
     <script>
@@ -111,9 +194,9 @@
             newItem.classList.add('item-description');
             newItem.innerHTML = `
                 <label for="machineSerialNumber${itemCount}">ITEM/MACHINE SERIAL NUMBER:</label>
-                <input type="text" id="machineSerialNumber${itemCount}" class="machine-serial-number" required>
+                <input type="text" id="machineSerialNumber${itemCount}" name="machineSerialNumbers[]" class="machine-serial-number" required>
                 <label for="jobDescription${itemCount}">JOB DESCRIPTION/INSTRUCTION:</label>
-                <textarea id="jobDescription${itemCount}" class="job-description" required></textarea>
+                <textarea id="jobDescription${itemCount}" name="jobDescriptions[]" class="job-description" required></textarea>
             `;
             container.appendChild(newItem);
         }
@@ -138,11 +221,11 @@
             newSparePart.classList.add('spare-part');
             newSparePart.innerHTML = `
                 <label for="sparePart${sparePartCount}">SPARES USED:</label>
-                <input type="text" id="sparePart${sparePartCount}" class="spare-part-name" required>
+                <input type="text" id="sparePart${sparePartCount}" name="spareParts[]" class="spare-part-name" required>
                 <label for="quantity${sparePartCount}">QUANTITY:</label>
-                <input type="text" id="quantity${sparePartCount}" class="spare-part-quantity" required>
+                <input type="text" id="quantity${sparePartCount}" name="quantities[]" class="spare-part-quantity" required>
                 <label for="unitCost${sparePartCount}">UNIT COST:</label>
-                <input type="text" id="unitCost${sparePartCount}" class="spare-part-unit-cost" required>
+                <input type="text" id="unitCost${sparePartCount}" name="unitCosts[]" class="spare-part-unit-cost" required>
                 
             `;
             container.appendChild(newSparePart);
