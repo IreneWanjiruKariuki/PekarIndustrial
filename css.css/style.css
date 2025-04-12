@@ -84,6 +84,7 @@ footer {
     color: white;
     padding: 20px 0;
     text-align: left;
+    margin-top: 20px;
 }
 
 .footer-container {
@@ -180,9 +181,10 @@ form button:hover {
     background-color: #555;
 }
 table{
-    /*border: 1px solid #373737;*/
+    border: 1px solid #373737;
     border-collapse: collapse;
     width: 80%;
+    margin-bottom: 20px;
 }
 td{
     border: 1px solid #373737;
@@ -190,17 +192,20 @@ td{
     text-align: left;
 }
 th{
-    background-color:#ccc;
+    background-color:#fcf8f8;
     color:#373737;
     border: 1px solid #373737;
     padding: 5px;
     text-align: left;
 }
 tr:nth-child(odd){
-    background-color:rgb(232, 232, 226);
+    background-color:rgba(146, 146, 141, 0.68);
 }
 tr:hover{
     color:#373737;
     background-color: azure;
     text-decoration: none;
+}
+.details{
+    margin: 0%;
 }

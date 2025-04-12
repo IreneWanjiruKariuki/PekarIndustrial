@@ -61,12 +61,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $unitCosts = $_POST['unitCosts'];
 
     // Step 1: Insert the main job card details into the card table
-    $stmt = $conn->prepare("INSERT INTO card (jobNo, date, customer_name, technician_name, date_started, date_finished) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO card (jobNo, date, customer_name, technician_name, date_started, date_finished, lpo_no) VALUES (?, ?, ?, ?, ?, ?, ?)");
     if (!$stmt) {
         echo "Error preparing statement for card: " . $conn->error;
         exit();
     }
-    $stmt->bind_param("ssssss", $jobNumber, $date, $customerName, $technicianName, $dateStarted, $dateFinished);
+    $stmt->bind_param("sssssss", $jobNumber, $date, $customerName, $technicianName, $dateStarted, $dateFinished, $lpo);
     if (!$stmt->execute()) {
         echo "Error executing card statement: " . $stmt->error;
         exit();
