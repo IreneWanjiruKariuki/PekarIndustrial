@@ -1,65 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css.css/style.css">
-    
-    <title>Pekar Industrial and Construction LTD</title>
-</head>
-<body background="images/img5.jpg">
-    <nav>
-    
-        <a href="./">HOME</a>
-        <a href="viewcard.php">JOB CARDS</a>
-        <a href="viewnote.php">DELIVERY NOTES</a>
-        <a href="viewinvoice.php">INVOICES</a>
-        <div class="search-container">
-            <input type="text" placeholder="Search..." id="search">
-            <button type="submit">🔍</button>
-        </div>
-    </nav>
 
-    <div class="cont">
-        <img src="images/image.png" width="1255" height="150" class="d-inline-block align-top" alt="Logo">
-        <h2>Plumbing works, Mechanical & Electrical plant installations, HVAC,<br> Infra-Red thermography and other maintainance solutions <br> and General Contractors</h2>
-    </div>
 
-    <div class="container">
-        <div class="box" style="background-image: url('images/img13.\ Vector_');">
-            <p><strong>JOB CARDS:</strong> Keep track of work progress, assigned tasks, and project timelines efficiently.</p>
-            <a href="createcard.php" class="button"  style="font-weight: bolder;">+ Create</a>
-        </div>
-        <div class="box" style="background-image: url('images/img13.\ Vector_');">
-            <p><strong>DELIVERY NOTES:</strong> Document all goods delivered to clients with accurate details and timestamps.</p>
-            <a href="createnote.php" class="button" style="font-weight: bolder;">+ Create</a>
-        </div>
-        <div class="box" style="background-image: url('images/img13.\ Vector_');">
-            <p><strong>INVOICES:</strong> Generate detailed invoices with itemized billing and payment tracking.</p>
-            <a href="createinvoice.php" class="button"  style="font-weight: bolder;">+ Create </a>
-        </div>
-    </div>
-    <footer>
-        <div class="footer-container">
-            <!-- Section 1 -->
-            <div class="footer-section">
-                <h3>Pekar industrial & construction LTD</h3>
-                <ul>
-                    <li><h4>Location: Kasarani Mwiki Road</h4></li>
-                    <li><h4>P.O Box 4384-00200 City Square Nairobi</h4></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>contact info</h3>
-                <ul>
-                    <li><h4>Email: pekar.industrial@gmail.com</h4></li>
-                    <li><h4>Cell Phone: 0721301274/0722301274</h4></li>
-                </ul>
-            </div>
-            <div class="footer-bottom">
-                © 2025 Your Company | All rights reserved.
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
+<script>
+
+        function resetInvoiceNo() {
+            localStorage.removeItem('lastInvoiceNo');
+            alert("Invoice number has been reset.");
+            document.getElementById('invoiceNo').value = generateInvoiceNo(); // Update the invoice number after reset
+        }
+
+        window.onload = function() {
+            document.getElementById('invoiceNo').value = generateInvoiceNo(); // Set the invoice number when the page loads
+        }
+    </script>

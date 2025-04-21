@@ -32,16 +32,8 @@
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <script>
-        function generateInvoiceNo() {
-            let lastInvoiceNo = localStorage.getItem('lastInvoiceNo');
-            if (!lastInvoiceNo) {
-                lastInvoiceNo = 254;
-            }
-            const newInvoiceNo = parseInt(lastInvoiceNo) + 1;
-            localStorage.setItem('lastInvoiceNo', newInvoiceNo);
-            return `${String(newInvoiceNo).padStart(3, '0')}`;
-        }
 
         function resetInvoiceNo() {
             localStorage.removeItem('lastInvoiceNo');
@@ -49,10 +41,8 @@
             document.getElementById('invoiceNo').value = generateInvoiceNo(); // Update the invoice number after reset
         }
 
-        window.onload = function() {
-            document.getElementById('invoiceNo').value = generateInvoiceNo(); // Set the invoice number when the page loads
-        }
     </script>
+    
 </head>
 <body background="images/img5.jpg">
     <nav>
@@ -159,8 +149,7 @@ $conn->close();
     </div>
     <form id="invoiceForm" method="POST" action="<?php print htmlspecialchars($_SERVER["PHP_SELF"]); ?>" style="background-color: white; width: 60%; padding: 20px;">
         <h2 style="text-align: center;">INVOICE</h2>
-        <label for="invoiceNo">INVOICE NO:</label>
-        <input type="text" id="invoiceNo" name="invoiceNo" required><br><br>
+        
 
         <label for="name">NAME:</label>
         <input type="text" id="name" name="name"required><br><br>
@@ -202,7 +191,7 @@ $conn->close();
 
         <button type="button" onclick="generatePDF()">Download as PDF</button>
 
-        <button type="button" onclick="resetInvoiceNo()">Reset Invoice Number</button>
+        <!--<button type="button" onclick="resetInvoiceNo()">Reset Invoice Number</button>-->
 
         <input type="submit" name="create_invoice" value="Save invoice">
     </form>
@@ -254,6 +243,18 @@ $conn->close();
         }
 
         async function generatePDF() {
+            // Generate the invoice number
+    function generateInvoiceNo() {
+        let lastInvoiceNo = localStorage.getItem('lastInvoiceNo');
+        if (!lastInvoiceNo) {
+            lastInvoiceNo = 253;
+        }
+        const newInvoiceNo = parseInt(lastInvoiceNo) + 1;
+        localStorage.setItem('lastInvoiceNo', newInvoiceNo);
+        return `00${newInvoiceNo}`;
+    }
+
+    const invoiceNo = generateInvoiceNo(); // Call the function to generate the invoice number
             const { total, totalVAT, grandTotal } = calculateTotals();
 
             const { jsPDF } = window.jspdf;
@@ -261,7 +262,7 @@ $conn->close();
 
             // Getting input values
             const name = document.getElementById('name').value;
-            const invoiceNo = document.getElementById('invoiceNo').value;
+            
             const address = document.getElementById('address').value;
             const lpo = document.getElementById('lpo').value;
             const contact = document.getElementById('contact').value;

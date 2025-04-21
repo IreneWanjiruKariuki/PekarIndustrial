@@ -8,25 +8,13 @@
     <link rel="stylesheet" href="css.css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
-        function generateDeliveryNo() {
-            let lastDeliveryNo = localStorage.getItem('lastDeliveryNo');
-            if (!lastDeliveryNo) {
-                lastDeliveryNo = 0;
-            }
-            const newDeliveryNo = parseInt(lastDeliveryNo) + 1;
-            localStorage.setItem('lastDeliveryNo', newDeliveryNo);
-            return `DEL-${newDeliveryNo}`;
-        }
 
         function resetDeliveryNo() {
             localStorage.removeItem('lastDeliveryNo');
             alert("Delivery number has been reset.");
-            document.getElementById('deliveryNo').value = generateDeliveryNo(); // Update the delivery number after reset
+            document.getElementById('invoiceNo').value = generateDeliveryNo(); // Update the delivery number after reset
         }
 
-        window.onload = function() {
-            document.getElementById('deliveryNo').value = generateDeliveryNo(); // Set the delivery number when the page loads
-        }
     </script>
 </head>
 <body background="images/img5.jpg">
@@ -106,8 +94,7 @@ $conn->close();
     </div>
     <form id="deliveryNoteForm" method="POST" action="<?php print htmlspecialchars($_SERVER["PHP_SELF"]); ?>" style="background-color: white; width: 60%; padding: 20px;">
         <h2 style="text-align: center;">DELIVERY NOTE</h2>
-        <label for="deliveryNo">DELIVERY NO:</label>
-        <input type="text" id="deliveryNo" name="deliveryNo" required><br><br>
+        
 
         <label for="deliverTo">DELIVER TO:</label>
         <input type="text" id="deliverTo" name="deliverTo" required><br><br>
@@ -141,7 +128,7 @@ $conn->close();
 
         <button type="button" onclick="generatePDF()">Download as PDF</button>
 
-        <button type="button" onclick="resetDeliveryNo()">Reset Delivery Number</button>
+        <!--<button type="button" onclick="resetDeliveryNo()">Reset Delivery Number</button>-->
 
         <input type="submit" name="create_note" value="Save delivery note">
     </form>
@@ -166,12 +153,22 @@ $conn->close();
             container.appendChild(newItem);
         }
         async function generatePDF() {
+            function generateDeliveryNo() {
+            let lastDeliveryNo = localStorage.getItem('lastDeliveryNo');
+            if (!lastDeliveryNo) {
+                lastDeliveryNo = 24;
+            }
+            const newDeliveryNo = parseInt(lastDeliveryNo) + 1;
+            localStorage.setItem('lastDeliveryNo', newDeliveryNo);
+            return `0${newDeliveryNo}`;
+        }
+        const deliveryNo = generateDeliveryNo(); // Call the function to generate the invoice number
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
 
             // Getting input values
             const deliverTo = document.getElementById('deliverTo').value;
-            const deliveryNo = document.getElementById('deliveryNo').value;
+            
             const lpo = document.getElementById('lpo').value;
             const dated = document.getElementById('dated').value;
             const deliveryDate = document.getElementById('deliveryDate').value;

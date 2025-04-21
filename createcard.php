@@ -7,15 +7,6 @@
     <link rel="stylesheet" href="css.css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
-        function generateJobNumber() {
-            let lastJobNumber = localStorage.getItem('lastJobNumber');
-            if (!lastJobNumber) {
-                lastJobNumber = 0;
-            }
-            const newJobNumber = parseInt(lastJobNumber) + 1;
-            localStorage.setItem('lastJobNumber', newJobNumber);
-            return `JOB-${newJobNumber}`;
-        }
 
         function resetJobNumber() {
             localStorage.removeItem('lastJobNumber');
@@ -23,9 +14,6 @@
             document.getElementById('jobNumber').value = generateJobNumber(); // Update the job number after reset
         }
 
-        window.onload = function() {
-            document.getElementById('jobNumber').value = generateJobNumber(); // Set the job number when the page loads
-        }
     </script>
 </head>
 <body background="images/img5.jpg">
@@ -131,8 +119,7 @@ $conn->close();
         
         <h2 style="text-align: center;">JOB CARD/EQUIPMENTMENT HANDOVER</h2>
         
-        <label for="jobNumber">JOB NUMBER:</label>
-        <input type="text" id="jobNumber" name="jobNumber" required><br><br>
+        
 
         <label for="date">DATE:</label>
         <input type="date" id="date" name="date" required><br><br>
@@ -232,6 +219,16 @@ $conn->close();
         }
 
         async function generatePDF() {
+            function generateJobNumber() {
+            let lastJobNumber = localStorage.getItem('lastJobNumber');
+            if (!lastJobNumber) {
+                lastJobNumber = 23;
+            }
+            const newJobNumber = parseInt(lastJobNumber) + 1;
+            localStorage.setItem('lastJobNumber', newJobNumber);
+            return `0${newJobNumber}`;
+        }
+        const jobNumber = generateJobNumber(); // Call the function to generate the job number
             const { total } = calculateTotals();
 
             const { jsPDF } = window.jspdf;
@@ -239,7 +236,7 @@ $conn->close();
 
             // Getting input values
             const date = document.getElementById('date').value;
-            const jobNumber = document.getElementById('jobNumber').value;
+            
             const customerName = document.getElementById('customerName').value;
             const technicianName = document.getElementById('technicianName').value;
             const lpo = document.getElementById('lpo').value;
@@ -285,7 +282,7 @@ $conn->close();
             doc.setTextColor(50, 50, 50);
             doc.text(`JOB NO:`, 140, 65);
             doc.setTextColor(0, 0, 0);
-            doc.text(`${document.getElementById('jobNumber').value}`, 160, 65);
+            doc.text(`${jobNumber}`, 160, 65);
     
             // Customer and Technician Info
             doc.rect(20, 69, 180, 7);
